@@ -57,6 +57,6 @@ public class CellSpawnerScript : MonoBehaviour
 
 
     private void CreateCell(float x, float y, float z){
-        Vector3 position = new Vector3(x, y, \)
+        Vector3 position = new Vector3(x, y, z);
     }
 }
