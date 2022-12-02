@@ -10,8 +10,8 @@ public class CellSpawnerScript : MonoBehaviour
      
     [Header("Cell parameters")]
     [SerializeField] float totalFieldWidth = 20;
-    [SerializeField] int cell_rows = 10;
-    [SerializeField] int cell_columns = 10;
+    [SerializeField] int cellRows = 10;
+    [SerializeField] int cellColumns = 10;
 
 
     // Start is called before the first frame update
@@ -35,7 +35,28 @@ public class CellSpawnerScript : MonoBehaviour
         
     }
 
+
     private void CreateCells(){
+        float initial_x_position = -totalFieldWidth/2;
+        float initial_z_position = -totalFieldWidth/2;
+        float y_position = 0;
+
+        float row_offset = totalFieldWidth/cellRows;
+        float column_offset = totalFieldWidth/cellColumns;
+
+        for (int row=0; row<cellRows; row++){
+            for (int column=0; column<cellColumns; column++){
+                float x_position = initial_x_position + row * row_offset;
+                float z_position = initial_z_position + column * column_offset;
+                CreateCell(x_position, y_position, z_position);
+            }
+        }
         
+
+    }
+
+
+    private void CreateCell(float x, float y, float z){
+        Vector3 position = new Vector3(x, y, \)
     }
 }
