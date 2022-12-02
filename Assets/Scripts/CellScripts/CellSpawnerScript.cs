@@ -57,7 +57,7 @@ public class CellSpawnerScript : MonoBehaviour
 
     private void CreateCell(float xPosition, float yPosition, float zPosition, float xScale, float zScale){
         Vector3 position = new Vector3(xPosition, yPosition, zPosition);
-        Vector3 scale = new Vector3(xScale, 0.1f, zScale);
+        Vector3 scale = new Vector3(xScale, 1f, zScale);
 
         GameObject a = Instantiate(emptyCell, position, Quaternion.identity);
         a.transform.localScale = scale;

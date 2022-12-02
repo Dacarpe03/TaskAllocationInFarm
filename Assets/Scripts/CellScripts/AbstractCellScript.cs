@@ -28,7 +28,6 @@ public abstract class AbstractCellScript : MonoBehaviour
     protected void TriggerNextState(){
         StartAnimation();
         StartCoroutine(Countdown());
-        Destroy(this.gameObject);
     }
 
     protected void StartAnimation(){
@@ -36,9 +35,11 @@ public abstract class AbstractCellScript : MonoBehaviour
     }
 
     protected IEnumerator Countdown(){
+        Debug.Log("Countdown");
         yield return new WaitForSeconds(timeToNextState);
         GameObject newState = Instantiate(nextCellStateObject, this.transform.position, Quaternion.identity);
-        //newState.GetComponent<AbstractCellScript>().SetScale(this.transform.localScale);
+        newState.GetComponent<AbstractCellScript>().SetScale(this.transform.localScale);
+        Destroy(this.gameObject);
     }
 
     public void SetScale(Vector3 scale){

@@ -10,11 +10,6 @@ public class EmptyCellScript : AbstractCellScript
         base.Start();
         Debug.Log("Soy el hijo");
         Debug.Log(timeToNextState);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        TriggerNextState();
     }
 }
