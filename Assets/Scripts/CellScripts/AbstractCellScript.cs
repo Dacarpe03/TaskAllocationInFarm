@@ -31,7 +31,8 @@ public abstract class AbstractCellScript : MonoBehaviour
     }
 
     protected void StartAnimation(){
-        //Instantiate(animationObject, this.transform.position, Quaternion.identity)
+        GameObject anim = Instantiate(animationObject, this.transform.position, Quaternion.identity);
+        anim.transform.localScale = this.transform.localScale;
     }
 
     protected IEnumerator Countdown(){
