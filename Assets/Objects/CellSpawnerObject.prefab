@@ -46,6 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   field: {fileID: 773807580105388228, guid: c619aa313e5009641824d54a85999688, type: 3}
   grass: {fileID: 6820481983813859172, guid: 942986d48600f844a900cc0644884379, type: 3}
+  emptyCell: {fileID: 773807580105388228, guid: ac00bf6a647bdda4bab8a89a1961e2e4, type: 3}
   totalFieldWidth: 20
-  cell_rows: 10
-  cell_columns: 10
+  cellRows: 10
+  cellColumns: 10

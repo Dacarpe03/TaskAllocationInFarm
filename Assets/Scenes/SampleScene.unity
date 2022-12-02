@@ -308,6 +308,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 504460938683984013, guid: 20bd9c04d7649af4ea7e18088b52a3b9, type: 3}
+      propertyPath: cellRows
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 504460938683984013, guid: 20bd9c04d7649af4ea7e18088b52a3b9, type: 3}
+      propertyPath: cellColumns
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 504460938683984013, guid: 20bd9c04d7649af4ea7e18088b52a3b9, type: 3}
+      propertyPath: totalFieldWidth
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 5738532979138335302, guid: 20bd9c04d7649af4ea7e18088b52a3b9, type: 3}
       propertyPath: m_Name
       value: CellSpawnerObject
