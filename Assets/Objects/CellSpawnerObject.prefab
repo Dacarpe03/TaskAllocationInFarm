@@ -46,7 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   field: {fileID: 773807580105388228, guid: c619aa313e5009641824d54a85999688, type: 3}
   grass: {fileID: 6820481983813859172, guid: 942986d48600f844a900cc0644884379, type: 3}
-  emptyCell: {fileID: 773807580105388228, guid: ac00bf6a647bdda4bab8a89a1961e2e4, type: 3}
+  emptyCell: {fileID: 7250767079737083285, guid: ac00bf6a647bdda4bab8a89a1961e2e4, type: 3}
+  seedCell: {fileID: 7250767079737083285, guid: 93a014ce018657d48bb6ffbd0c804f06, type: 3}
+  wateredCell: {fileID: 7250767079737083285, guid: d701e49e5a94d3547b69ba73305b3b08, type: 3}
   totalFieldWidth: 20
   cellRows: 10
   cellColumns: 10
