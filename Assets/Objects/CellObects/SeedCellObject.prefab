@@ -92,7 +92,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7250767079737083290}
-  - component: {fileID: 4682821039201977918}
+  - component: {fileID: 7874434301899270047}
   m_Layer: 0
   m_Name: SeedCellObject
   m_TagString: Untagged
@@ -117,7 +117,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4682821039201977918
+--- !u!114 &7874434301899270047
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -126,12 +126,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 7250767079737083285}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25d4f54ce4268c240b99679f3806e63e, type: 3}
+  m_Script: {fileID: 11500000, guid: 53e49f4c98061df42b500c601c2736c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextCellStateObject: {fileID: 7250767079737083285, guid: ac00bf6a647bdda4bab8a89a1961e2e4, type: 3}
-  animationObject: {fileID: 8994110410948151268, guid: b8f7e2ab2a774664cbba4660b5395a85, type: 3}
-  timeToNextState: 2
+  nextCellStateObject: {fileID: 7250767079737083285, guid: d701e49e5a94d3547b69ba73305b3b08, type: 3}
+  animationObject: {fileID: 8513436292004028945, guid: 41cda793c434ff34a95f91834a882112, type: 3}
+  initialY: -1
+  timeToNextState: 5
 --- !u!1 &7250767080201231247
 GameObject:
   m_ObjectHideFlags: 0

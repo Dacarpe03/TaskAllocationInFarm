@@ -9,6 +9,7 @@ public abstract class AbstractCellScript : MonoBehaviour
 
     [Header("AnimationObject")]
     [SerializeField] protected GameObject animationObject;
+    [SerializeField] protected float initialY;
 
     [Header("Timers")]
     [SerializeField] protected float timeToNextState = 2f;
@@ -25,13 +26,14 @@ public abstract class AbstractCellScript : MonoBehaviour
         Debug.Log("Creating task");
     }
 
-    protected void TriggerNextState(){
+    protected virtual void TriggerNextState(){
         StartAnimation();
         StartCoroutine(Countdown());
     }
 
     protected void StartAnimation(){
-        GameObject anim = Instantiate(animationObject, this.transform.position, Quaternion.identity);
+        Vector3 position = new Vector3(this.transform.position.x, initialY, this.transform.position.z);
+        GameObject anim = Instantiate(animationObject, position, Quaternion.identity);
         anim.transform.localScale = this.transform.localScale;
     }
 

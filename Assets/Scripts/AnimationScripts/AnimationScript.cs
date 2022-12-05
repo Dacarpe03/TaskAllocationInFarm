@@ -7,6 +7,7 @@ public class AnimationScript : MonoBehaviour
     [Header("Parameters")]
     [SerializeField] private float time = 2f;
     [SerializeField] private float initialPosition = 10f;
+    [SerializeField] private float finalPosition = 0f;
     [SerializeField] private float speed = 2f;
 
     // Start is called before the first frame update
@@ -15,7 +16,7 @@ public class AnimationScript : MonoBehaviour
         Vector3 position = this.transform.position;
         position.y = initialPosition;
         this.transform.position = position;
-        speed = initialPosition/time;
+        speed = (initialPosition-finalPosition)/time;
         StartCoroutine(Countdown());
     }
 
