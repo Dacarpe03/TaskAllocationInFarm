@@ -10,6 +10,8 @@ public class CellSpawnerScript : MonoBehaviour
 
     [Header("Cells")]
     [SerializeField] GameObject emptyCell;
+    [SerializeField] GameObject seedCell;
+    [SerializeField] GameObject wateredCell;
      
     [Header("Cell parameters")]
     [SerializeField] float totalFieldWidth = 20;
@@ -34,6 +36,7 @@ public class CellSpawnerScript : MonoBehaviour
 
 
     private void CreateCells(){
+
         float measure = totalFieldWidth-2;
         float initialXPosition = -measure/2;
         float initialZPosition = -measure/2;
@@ -56,10 +59,19 @@ public class CellSpawnerScript : MonoBehaviour
 
 
     private void CreateCell(float xPosition, float yPosition, float zPosition, float xScale, float zScale){
+        int type = Random.Range(0, 3);
         Vector3 position = new Vector3(xPosition, yPosition, zPosition);
         Vector3 scale = new Vector3(xScale, 1f, zScale);
 
-        GameObject a = Instantiate(emptyCell, position, Quaternion.identity);
-        a.transform.localScale = scale;
+        if (type == 0){    
+            GameObject a = Instantiate(emptyCell, position, Quaternion.identity);
+            a.transform.localScale = scale;
+        }else if (type == 1){    
+            GameObject a = Instantiate(seedCell, position, Quaternion.identity);
+            a.transform.localScale = scale;
+        }else if (type == 2){    
+            GameObject a = Instantiate(wateredCell, position, Quaternion.identity);
+            a.transform.localScale = scale;
+        }
     }
 }
