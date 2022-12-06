@@ -24,6 +24,19 @@ public class ManagerScript : MonoBehaviour
         wateredDict = new Dictionary<int, AbstractCellScript>();
     }   
     
+    void Start(){
+        StartCoroutine(ShowInfo());
+    }
+
+    private IEnumerator ShowInfo(){
+        string report = "Empty Cells: " + emptDict.Count.ToString();
+        report += "\nSeed Cells:" + seedsDict.Count.ToString();
+        report += "\nWatered Cells:" + wateredDict.Count.ToString();
+        Debug.Log(report);
+        yield return new WaitForSeconds(timeToReport);
+        StartCoroutine(ShowInfo());
+    }
+
     public int AddCell(AbstractCellScript newCell, int type){
         if (type==emptyCell){
             emptDict[cellsCount] = newCell;
@@ -38,16 +51,15 @@ public class ManagerScript : MonoBehaviour
         return cellId;
     }
 
-    void Start(){
-        StartCoroutine(ShowInfo());
+    public void RemoveCell(int cellId, int type){
+        if (type==emptyCell){
+            emptDict.Remove(cellId);
+        } else if (type==seedCell){
+            seedsDict.Remove(cellId);
+        }else if (type==wateredCell){
+            wateredDict.Remove(cellId);
+        }
     }
 
-    private IEnumerator ShowInfo(){
-        string report = "Empty Cells: " + emptDict.Count.ToString();
-        report += "\nSeed Cells:" + seedsDict.Count.ToString();
-        report += "\nWatered Cells:" + wateredDict.Count.ToString();
-        Debug.Log(report);
-        yield return new WaitForSeconds(timeToReport);
-        StartCoroutine(ShowInfo());
-    }
+    
 }

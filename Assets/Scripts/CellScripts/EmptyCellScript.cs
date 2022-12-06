@@ -8,4 +8,9 @@ public class EmptyCellScript : AbstractCellScript
     {
         cellId = manager.AddCell(this, emptyCell);
     }
+
+    protected override void Unsuscribe()
+    {
+        manager.RemoveCell(cellId, emptyCell);
+    }
 }

@@ -9,4 +9,9 @@ public class SeedCellScript : AbstractCellScript
     {
         cellId = manager.AddCell(this, seedCell);
     }
+
+    protected override void Unsuscribe()
+    {
+        manager.RemoveCell(cellId, seedCell);
+    }
 }
