@@ -59,8 +59,44 @@ public class ManagerScript : MonoBehaviour
     /// </summary>
     void Update(){
         if (tasks.Count > 0){
+            Debug.Log("offering task");
             int[] taskOffered = tasks.Dequeue();
+            AuctionTask(taskOffered);
         }
+    }
+
+
+    /// <summary>
+    /// Method to start an auction between the drones to win the task
+    /// </summary>
+    /// <param name="taskOffered">
+    /// int[] with the task data
+    /// </param>
+    private void AuctionTask(int[] taskOffered){
+        float[] bids = new float[drones.Length];
+        float maxBid = 0;
+
+        for (int i=0; i<drones.Length; i++){
+            float currentBid = drones[i].Bid(taskOffered);
+            bids[i] = currentBid;
+            if (maxBid < currentBid){
+                maxBid = currentBid;
+            }
+        }
+
+        List<int> participants = new List<int>(); 
+        for (int i=0; i<bids.Length; i++){
+            if(bids[i] == maxBid){
+                participants.Add(i);
+            }
+        }
+
+        if (participants.Count > 0){
+            int raffleWinnerIndex = Random.Range(0, participants.Count);
+            int raffleWinner = participants[raffleWinnerIndex];
+            drones[raffleWinner].AddTask(taskOffered);
+        }
+        
     }
 
 
@@ -140,5 +176,39 @@ public class ManagerScript : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Gets the position of a cell give a cell type and its id
+    /// </summary>
+    /// <param name="taskType">
+    /// The number of the dict where to look for
+    /// </param>
+    /// <param name="cellId">
+    /// Cell id of the dictionary
+    /// </param>
+    public Vector3 GetPositionOfCell(int taskType, int cellId){
+        if (taskType==emptyCell){
+            return emptDict[cellId].GetPosition();
+        } else if (taskType==seedCell){
+            return seedsDict[cellId].GetPosition();
+        }else if (taskType==wateredCell){
+            return wateredDict[cellId].GetPosition();
+        }
+
+        return Vector3.zero;
+    }
+    
+
+    public float TriggerTask(int taskType, int cellId){
+        if (taskType==emptyCell){
+            return emptDict[cellId].TriggerNextState();
+        } else if (taskType==seedCell){
+            return seedsDict[cellId].TriggerNextState();
+        }else if (taskType==wateredCell){
+            return wateredDict[cellId].TriggerNextState();
+        }
+        
+        return 0f;
+    }
     
 }

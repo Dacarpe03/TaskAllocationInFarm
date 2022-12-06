@@ -15,12 +15,16 @@ public class DroneScript : MonoBehaviour
     [Header("Attributes to control task")]
     private Vector3 desiredPosition = new Vector3(10f, 10f, 10f);
     private bool working = false;
+    private int currentTask = 0;
+    private int currentCell = -1;
+
 
     [Header("Tasks Queue")]
     private Queue<int[]> tasksQueue; // Tasks queue
 
     [Header("Manager reference")]
     private ManagerScript manager;
+
 
     /// <summary>
     /// Initializes the tasks queue
@@ -43,9 +47,11 @@ public class DroneScript : MonoBehaviour
     /// </summary>
     private void Update(){
         if (!working && tasksQueue.Count>0){
+            Debug.Log("next task");
             GetNextTask();
         }
     }
+
 
     /// <summary>
     /// Adds a task to the queue
@@ -55,9 +61,24 @@ public class DroneScript : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Gets next task
+    /// </summary>
     private void GetNextTask(){
         int[] nextTask = tasksQueue.Dequeue();
-        
+        currentTask = nextTask[0];
+        currentCell = nextTask[1];
+        desiredPosition = manager.GetPositionOfCell(currentTask, currentCell);
+        desiredPosition.y = height;
+        StartCoroutine(MoveToTaskPosition());
+    }
+
+
+    /// <summay>
+    /// Gets the bid
+    /// </summary>
+    public float Bid(int[] task){
+        return 1f;
     }
 
 
@@ -65,16 +86,26 @@ public class DroneScript : MonoBehaviour
     /// Moves to the correspoding cell
     /// </summary>
     private IEnumerator MoveToTaskPosition(){
+        working = true;
         if(Vector3.Distance(this.transform.position, desiredPosition) > 0.1f){
             this.transform.position = Vector3.MoveTowards(this.transform.position, desiredPosition, speed * Time.deltaTime);
             yield return new WaitForEndOfFrame();
             StartCoroutine(MoveToTaskPosition());
         }else{
+            StartCoroutine(DoTask());
             yield return null;
-            working = false;
         }
         
     }
 
+
+    /// <summary>
+    /// Triggers the task
+    /// </summary>
+    private IEnumerator DoTask(){
+        float waitTime = manager.TriggerTask(currentTask, currentCell);
+        yield return new WaitForSeconds(waitTime);
+        working = false;
+    }
 
 }
