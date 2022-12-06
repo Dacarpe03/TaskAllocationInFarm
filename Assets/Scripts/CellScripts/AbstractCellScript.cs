@@ -64,7 +64,7 @@ public abstract class AbstractCellScript : MonoBehaviour
     /// Starts the coundown to destroy this cell and spawn next, the time it takes to do
     /// this is the time to complete the cell's task
     /// </summary>
-    protected IEnumerator Countdown(){
+    protected virtual IEnumerator Countdown(){
         yield return new WaitForSeconds(timeToNextState);
         GameObject newState = Instantiate(nextCellStateObject, this.transform.position, Quaternion.identity);
         newState.GetComponent<AbstractCellScript>().SetScale(this.transform.localScale);
