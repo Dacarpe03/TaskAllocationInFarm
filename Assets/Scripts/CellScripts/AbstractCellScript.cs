@@ -14,16 +14,25 @@ public abstract class AbstractCellScript : MonoBehaviour
     [Header("Timers")]
     [SerializeField] protected float timeToNextState = 2f;
 
+    [Header("Manager reference")]
+    protected ManagerScript manager;
     protected CellSpawnerScript a;
 
+    [Header("Cell Types")]
+    protected int emptyCell = 1;
+    protected int seedCell = 2;
+    protected int wateredCell = 3;
+
+    [Header("Cell id")]
+    protected int cellId = -1;
+
     protected virtual void Start(){
-        a = FindObjectOfType<CellSpawnerScript>();
-        Debug.Log("Lo tengo");
+        manager = FindObjectOfType<ManagerScript>();
+        Suscribe();
 
     }
 
     protected void CreateTask(){
-        Debug.Log("Creating task");
     }
 
     protected virtual void TriggerNextState(){
@@ -38,15 +47,19 @@ public abstract class AbstractCellScript : MonoBehaviour
     }
 
     protected IEnumerator Countdown(){
-        Debug.Log("Countdown");
         yield return new WaitForSeconds(timeToNextState);
         GameObject newState = Instantiate(nextCellStateObject, this.transform.position, Quaternion.identity);
         newState.GetComponent<AbstractCellScript>().SetScale(this.transform.localScale);
+        Unsuscribe();
         Destroy(this.gameObject);
     }
 
     public void SetScale(Vector3 scale){
         this.transform.localScale = scale;
     }
+
+    protected abstract void Suscribe();
+
+    protected abstract void Unsuscribe();
 
 }

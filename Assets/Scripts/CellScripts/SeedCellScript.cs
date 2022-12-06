@@ -12,4 +12,14 @@ public class SeedCellScript : AbstractCellScript
         Debug.Log(timeToNextState);
         TriggerNextState();
     }
+
+    protected override void Suscribe()
+    {
+        cellId = manager.AddCell(this, seedCell);
+    }
+
+    protected override void Unsuscribe()
+    {
+        throw new System.NotImplementedException();
+    }
 }

@@ -16,4 +16,15 @@ public class WateredCellScript : AbstractCellScript
         base.TriggerNextState();
         Object.Destroy(this.transform.GetChild(2).gameObject);
     }
+
+
+    protected override void Suscribe()
+    {
+        cellId = manager.AddCell(this, wateredCell);
+    }
+
+    protected override void Unsuscribe()
+    {
+        throw new System.NotImplementedException();
+    }
 }
