@@ -1,10 +1,9 @@
-/// <summary>
-/// Class that makes an animation object moved to its destination
-/// </summary>
-
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// Class that makes an animation object moved to its destination
+/// </summary>
 public class AnimationScript : MonoBehaviour
 {
     [Header("Parameters")]
