@@ -199,6 +199,9 @@ public class ManagerScript : MonoBehaviour
     }
     
 
+    /// <summary>
+    /// Triggers the cell for it to go to the next state
+    /// </summary>
     public float TriggerTask(int taskType, int cellId){
         if (taskType==emptyCell){
             return emptDict[cellId].TriggerNextState();
