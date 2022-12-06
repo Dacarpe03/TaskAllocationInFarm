@@ -1,15 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class EmptyCellScript : AbstractCellScript
 {
-    // Start is called before the first frame update
-    protected override void Start()
+    protected override void Suscribe()
     {
-        base.Start();
-        Debug.Log("Soy el hijo");
-        Debug.Log(timeToNextState);
-        TriggerNextState();
+        cellId = manager.AddCell(this, emptyCell);
+    }
+
+    protected override void Unsuscribe()
+    {
+        manager.RemoveCell(cellId, emptyCell);
     }
 }
