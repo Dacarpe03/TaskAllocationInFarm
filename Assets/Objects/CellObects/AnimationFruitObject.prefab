@@ -129,6 +129,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   time: 2
-  initialPosition: 2
+  initialPosition: 0.5
   finalPosition: 10
   speed: 2

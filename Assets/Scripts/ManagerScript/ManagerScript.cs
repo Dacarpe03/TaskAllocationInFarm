@@ -44,12 +44,18 @@ public class ManagerScript : MonoBehaviour
         StartCoroutine(ShowInfo());
     }
 
+
+    /// <summary>
+    /// Each frame if there is a new task, starts a new auction
+    /// </summary>
     void Update(){
         if (tasks.Count > 0){
             int[] taskOffered = tasks.Dequeue();
             print(taskOffered[0].ToString());
         }
     }
+
+
     /// <summary>
     /// Coroutine that executes in time intervals to follow the progress of the simulation
     /// </summary>
