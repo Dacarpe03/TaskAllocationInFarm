@@ -29,7 +29,7 @@ public abstract class AbstractCellScript : MonoBehaviour
     protected virtual void Start(){
         manager = FindObjectOfType<ManagerScript>();
         Suscribe();
-
+        TriggerNextState();
     }
 
     protected void CreateTask(){
@@ -50,7 +50,7 @@ public abstract class AbstractCellScript : MonoBehaviour
         yield return new WaitForSeconds(timeToNextState);
         GameObject newState = Instantiate(nextCellStateObject, this.transform.position, Quaternion.identity);
         newState.GetComponent<AbstractCellScript>().SetScale(this.transform.localScale);
-        Unsuscribe();
+        //Unsuscribe();
         Destroy(this.gameObject);
     }
 
@@ -59,7 +59,5 @@ public abstract class AbstractCellScript : MonoBehaviour
     }
 
     protected abstract void Suscribe();
-
-    protected abstract void Unsuscribe();
 
 }

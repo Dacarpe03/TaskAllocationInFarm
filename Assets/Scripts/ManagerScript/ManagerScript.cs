@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class ManagerScript : MonoBehaviour
 {
+    [Header("Time to report")]
+    private float timeToReport = 10;
+
     [Header("Cells dictionary")]
     Dictionary<int, AbstractCellScript> emptDict;
     Dictionary<int, AbstractCellScript> seedsDict;
@@ -33,5 +36,18 @@ public class ManagerScript : MonoBehaviour
         int cellId = cellsCount;
         cellsCount += 1;
         return cellId;
+    }
+
+    void Start(){
+        StartCoroutine(ShowInfo());
+    }
+
+    private IEnumerator ShowInfo(){
+        string report = "Empty Cells: " + emptDict.Count.ToString();
+        report += "\nSeed Cells:" + seedsDict.Count.ToString();
+        report += "\nWatered Cells:" + wateredDict.Count.ToString();
+        Debug.Log(report);
+        yield return new WaitForSeconds(timeToReport);
+        StartCoroutine(ShowInfo());
     }
 }
