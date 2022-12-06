@@ -80,7 +80,7 @@ public abstract class AbstractCellScript : MonoBehaviour
         this.transform.localScale = scale;
     }
 
- 
+    
     /// <summary>
     /// Abstract method that will suscribe on the corresponding list of the manager
     /// depending on the cell type and gets the cell id assigned by the manager.

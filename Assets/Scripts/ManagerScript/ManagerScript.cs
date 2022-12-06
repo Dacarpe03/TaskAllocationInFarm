@@ -17,21 +17,25 @@ public class ManagerScript : MonoBehaviour
     Dictionary<int, AbstractCellScript> wateredDict; // Watered cells dictionary
     int cellsCount = 0; // This counter will serve as the id for a new cell
 
-    [Header("Cell Types")] // To know in which dictionary place the cell
+    [Header("Cell/Task Types")] // To know in which dictionary place the cell
     protected int emptyCell = 1;
     protected int seedCell = 2;
     protected int wateredCell = 3;
 
 
+    [Header("Tasks Queue")]
+    private Queue<int[]> tasks;
+
+
     /// <summary>
-    /// First method to be invoked, will initialize the dictionaries
+    /// First method to be invoked, will initialize the dictionaries and tasks queue
     /// </summary>
     void Awake(){
         emptDict = new Dictionary<int, AbstractCellScript>();
         seedsDict = new Dictionary<int, AbstractCellScript>();
         wateredDict = new Dictionary<int, AbstractCellScript>();
-    }   
-    
+        tasks = new Queue<int[]>();
+    }
 
     /// <summary>
     /// Begins the constant reporting
@@ -40,7 +44,12 @@ public class ManagerScript : MonoBehaviour
         StartCoroutine(ShowInfo());
     }
 
-
+    void Update(){
+        if (tasks.Count > 0){
+            int[] taskOffered = tasks.Dequeue();
+            print(taskOffered[0].ToString());
+        }
+    }
     /// <summary>
     /// Coroutine that executes in time intervals to follow the progress of the simulation
     /// </summary>
@@ -51,6 +60,21 @@ public class ManagerScript : MonoBehaviour
         Debug.Log(report);
         yield return new WaitForSeconds(timeToReport);
         StartCoroutine(ShowInfo());
+    }
+
+
+    /// <summary>
+    /// Methods to add a task to the queue
+    /// </summary>
+    /// <param  name="taskType">
+    /// The type of task 
+    /// </param>
+    /// <param name="cellId">
+    /// Cell that asks for the task
+    /// </param>
+    private void AddTask(int taskType, int cellId){
+        int[] newTask = new int[]{taskType, cellId};
+        tasks.Enqueue(newTask);
     }
 
 
@@ -76,6 +100,8 @@ public class ManagerScript : MonoBehaviour
         }
 
         int cellId = cellsCount;
+        AddTask(type, cellId);
+
         cellsCount += 1;
         return cellId;
     }
