@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -10,7 +11,7 @@ public abstract class AbstractCellScript : MonoBehaviour
     [SerializeField] protected GameObject nextCellStateObject; /// The next cell object that spawns once this cell's task is completed
 
     [Header("AnimationObject")]
-    [SerializeField] protected GameObject animationObject; /// The animation object to spawn when the cell's taks starts
+    [SerializeField] protected List<GameObject> animationObjects; /// The animation object to spawn when the cell's taks starts
     [SerializeField] protected float initialY; /// The height of the animation object
 
     [Header("Timers")]
@@ -51,9 +52,11 @@ public abstract class AbstractCellScript : MonoBehaviour
     /// Instantiates the corresponding animation object
     /// </summary>
     protected void StartAnimation(){
-        Vector3 position = new Vector3(this.transform.position.x, initialY, this.transform.position.z);
-        GameObject anim = Instantiate(animationObject, position, Quaternion.identity);
-        anim.transform.localScale = this.transform.localScale;
+        foreach (GameObject anim in animationObjects){
+            Vector3 position = new Vector3(this.transform.position.x, initialY, this.transform.position.z);
+            GameObject newAnim = Instantiate(anim, position, Quaternion.identity);
+            newAnim.transform.localScale = this.transform.localScale;
+        }
     }
 
 
@@ -61,7 +64,7 @@ public abstract class AbstractCellScript : MonoBehaviour
     /// Starts the coundown to destroy this cell and spawn next, the time it takes to do
     /// this is the time to complete the cell's task
     /// </summary>
-    protected IEnumerator Countdown(){
+    protected virtual IEnumerator Countdown(){
         yield return new WaitForSeconds(timeToNextState);
         GameObject newState = Instantiate(nextCellStateObject, this.transform.position, Quaternion.identity);
         newState.GetComponent<AbstractCellScript>().SetScale(this.transform.localScale);

@@ -46,7 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nextCellStateObject: {fileID: 7250767079737083285, guid: 93a014ce018657d48bb6ffbd0c804f06, type: 3}
-  animationObject: {fileID: 8994110410948151268, guid: b8f7e2ab2a774664cbba4660b5395a85, type: 3}
+  animationObjects:
+  - {fileID: 8994110410948151268, guid: b8f7e2ab2a774664cbba4660b5395a85, type: 3}
   initialY: 10
   timeToNextState: 2
 --- !u!1 &7250767080201231247
