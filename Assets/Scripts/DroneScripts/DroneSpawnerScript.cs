@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -12,10 +10,11 @@ public class DroneSpawnerScript : MonoBehaviour
     [SerializeField] int numberOfDrones = 6;
     [SerializeField] GameObject droneObjet;
 
+
     /// <summary>
     /// Spawns the drones
     /// </summary>
-    void Start()
+    void Awake()
     {
         Vector3 initPosition = new Vector3(0f, 0f, 0f);
         for (int i=0; i<numberOfDrones; i++){

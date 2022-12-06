@@ -11,11 +11,17 @@ public class ManagerScript : MonoBehaviour
     [Header("Time to report")]
     private float timeToReport = 10; // Time interval between countings
 
+
     [Header("Cells dictionary")]
     Dictionary<int, AbstractCellScript> emptDict; // Empty cells dictionary
     Dictionary<int, AbstractCellScript> seedsDict; // Seed cells dictionary
     Dictionary<int, AbstractCellScript> wateredDict; // Watered cells dictionary
     int cellsCount = 0; // This counter will serve as the id for a new cell
+
+
+    [Header("Drones list")]
+    DroneScript[] drones;
+
 
     [Header("Cell/Task Types")] // To know in which dictionary place the cell
     protected int emptyCell = 1;
@@ -37,10 +43,13 @@ public class ManagerScript : MonoBehaviour
         tasks = new Queue<int[]>();
     }
 
+
     /// <summary>
     /// Begins the constant reporting
     /// </summary>
     void Start(){
+        drones = FindObjectsOfType<DroneScript>();
+        Debug.Log(drones.Length);
         StartCoroutine(ShowInfo());
     }
 
@@ -51,7 +60,6 @@ public class ManagerScript : MonoBehaviour
     void Update(){
         if (tasks.Count > 0){
             int[] taskOffered = tasks.Dequeue();
-            print(taskOffered[0].ToString());
         }
     }
 
