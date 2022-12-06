@@ -34,16 +34,16 @@ public abstract class AbstractCellScript : MonoBehaviour
     protected virtual void Start(){
         manager = FindObjectOfType<ManagerScript>();
         Suscribe();
-        TriggerNextState();
     }
 
 
     /// <summary>
     /// Starts the animation process and the countdown to spawn the next state cell
     /// </summary>
-    protected virtual void TriggerNextState(){
+    public virtual float TriggerNextState(){
         StartAnimation();
         StartCoroutine(Countdown());
+        return this.timeToNextState;
     }
 
 
@@ -80,7 +80,15 @@ public abstract class AbstractCellScript : MonoBehaviour
         this.transform.localScale = scale;
     }
 
+
+    /// <summary>
+    /// Returns the position of the cell
+    /// </summary>
+    public Vector3 GetPosition(){
+        return this.transform.position;
+    }
     
+
     /// <summary>
     /// Abstract method that will suscribe on the corresponding list of the manager
     /// depending on the cell type and gets the cell id assigned by the manager.

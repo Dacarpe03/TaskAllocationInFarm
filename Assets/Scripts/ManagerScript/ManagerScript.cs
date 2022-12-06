@@ -11,11 +11,17 @@ public class ManagerScript : MonoBehaviour
     [Header("Time to report")]
     private float timeToReport = 10; // Time interval between countings
 
+
     [Header("Cells dictionary")]
     Dictionary<int, AbstractCellScript> emptDict; // Empty cells dictionary
     Dictionary<int, AbstractCellScript> seedsDict; // Seed cells dictionary
     Dictionary<int, AbstractCellScript> wateredDict; // Watered cells dictionary
     int cellsCount = 0; // This counter will serve as the id for a new cell
+
+
+    [Header("Drones list")]
+    DroneScript[] drones;
+
 
     [Header("Cell/Task Types")] // To know in which dictionary place the cell
     protected int emptyCell = 1;
@@ -37,10 +43,13 @@ public class ManagerScript : MonoBehaviour
         tasks = new Queue<int[]>();
     }
 
+
     /// <summary>
     /// Begins the constant reporting
     /// </summary>
     void Start(){
+        drones = FindObjectsOfType<DroneScript>();
+        Debug.Log(drones.Length);
         StartCoroutine(ShowInfo());
     }
 
@@ -50,9 +59,44 @@ public class ManagerScript : MonoBehaviour
     /// </summary>
     void Update(){
         if (tasks.Count > 0){
+            Debug.Log("offering task");
             int[] taskOffered = tasks.Dequeue();
-            print(taskOffered[0].ToString());
+            AuctionTask(taskOffered);
         }
+    }
+
+
+    /// <summary>
+    /// Method to start an auction between the drones to win the task
+    /// </summary>
+    /// <param name="taskOffered">
+    /// int[] with the task data
+    /// </param>
+    private void AuctionTask(int[] taskOffered){
+        float[] bids = new float[drones.Length];
+        float maxBid = 0;
+
+        for (int i=0; i<drones.Length; i++){
+            float currentBid = drones[i].Bid(taskOffered);
+            bids[i] = currentBid;
+            if (maxBid < currentBid){
+                maxBid = currentBid;
+            }
+        }
+
+        List<int> participants = new List<int>(); 
+        for (int i=0; i<bids.Length; i++){
+            if(bids[i] == maxBid){
+                participants.Add(i);
+            }
+        }
+
+        if (participants.Count > 0){
+            int raffleWinnerIndex = Random.Range(0, participants.Count);
+            int raffleWinner = participants[raffleWinnerIndex];
+            drones[raffleWinner].AddTask(taskOffered);
+        }
+        
     }
 
 
@@ -132,5 +176,42 @@ public class ManagerScript : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Gets the position of a cell give a cell type and its id
+    /// </summary>
+    /// <param name="taskType">
+    /// The number of the dict where to look for
+    /// </param>
+    /// <param name="cellId">
+    /// Cell id of the dictionary
+    /// </param>
+    public Vector3 GetPositionOfCell(int taskType, int cellId){
+        if (taskType==emptyCell){
+            return emptDict[cellId].GetPosition();
+        } else if (taskType==seedCell){
+            return seedsDict[cellId].GetPosition();
+        }else if (taskType==wateredCell){
+            return wateredDict[cellId].GetPosition();
+        }
+
+        return Vector3.zero;
+    }
+    
+
+    /// <summary>
+    /// Triggers the cell for it to go to the next state
+    /// </summary>
+    public float TriggerTask(int taskType, int cellId){
+        if (taskType==emptyCell){
+            return emptDict[cellId].TriggerNextState();
+        } else if (taskType==seedCell){
+            return seedsDict[cellId].TriggerNextState();
+        }else if (taskType==wateredCell){
+            return wateredDict[cellId].TriggerNextState();
+        }
+        
+        return 0f;
+    }
     
 }
