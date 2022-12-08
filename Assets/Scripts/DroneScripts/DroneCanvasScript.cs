@@ -16,6 +16,9 @@ public class DroneCanvasScript : MonoBehaviour
     [SerializeField] private TextMeshProUGUI stateText;
     private string[] possibleTasks = {"Resting", "Planting", "Watering", "Harvesting"};
     private string[] possibleRecharges = {"Recharging nothing", "Recharging seeds", "Recharging water", "Dropping harvest"};
+    private string[] possibelResources = {"None", "Seeds left: ", "Litres left: ", "Capacity left: "};
+
+    private int maxCapacity;
     
 
     /// <summary>
@@ -23,6 +26,7 @@ public class DroneCanvasScript : MonoBehaviour
     /// </summary>
     private void Start(){
         myDrone = GetComponentInParent<DroneScript>();
+        maxCapacity = myDrone.GetCurrentResources();
     }
 
 
@@ -46,11 +50,18 @@ public class DroneCanvasScript : MonoBehaviour
             currentActivity = possibleRecharges[activity];
         }
         else if(IsWorking()){
-            currentActivity= possibleTasks[activity];
+            currentActivity = possibleTasks[activity];
+            currentActivity += AppendResources(activity);
+        }else{
+            currentActivity = "";
         }
         stateText.text = currentActivity;
     }
 
+
+    private string AppendResources(int taskType){
+        return "\n" + possibelResources[taskType] + GetCurrentResources().ToString() + "/" + maxCapacity.ToString();
+    }
 
     /// <summary>
     /// Gets the current activity of the drone
@@ -60,6 +71,11 @@ public class DroneCanvasScript : MonoBehaviour
     /// </returns>
     private int GetCurrentTask(){
         return myDrone.GetCurrentTask();
+    }
+
+
+    private int GetCurrentResources(){
+        return myDrone.GetCurrentResources();
     }
 
 
