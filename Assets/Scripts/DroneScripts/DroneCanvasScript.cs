@@ -14,7 +14,8 @@ public class DroneCanvasScript : MonoBehaviour
 
     [Header("Text components references")]
     [SerializeField] private TextMeshProUGUI stateText;
-    private string[] possibleActivities = {"Resting", "Planting", "Watering", "Harvesting"};
+    private string[] possibleTasks = {"Resting", "Planting", "Watering", "Harvesting"};
+    private string[] possibleRecharges = {"Recharging nothing", "Recharging seeds", "Recharging water", "Dropping harvest"};
     
 
     /// <summary>
@@ -39,10 +40,13 @@ public class DroneCanvasScript : MonoBehaviour
     /// </summary>
     private void UpdateActivityText(){
         
-        string currentActivity = possibleActivities[0];
-        if(IsWorking()){
-            int activity = GetCurrentTask();
-            currentActivity= possibleActivities[activity];
+        string currentActivity = "Resting";
+        int activity = GetCurrentTask();
+        if (IsRecharging()){
+            currentActivity = possibleRecharges[activity];
+        }
+        else if(IsWorking()){
+            currentActivity= possibleTasks[activity];
         }
         stateText.text = currentActivity;
     }
@@ -60,9 +64,17 @@ public class DroneCanvasScript : MonoBehaviour
 
 
     /// <summary>
-    /// Tells if the drone is currently
+    /// Tells if the drone is currently working on the task
     /// <summary>
     private bool IsWorking(){
         return myDrone.IsWorking();
+    }
+
+
+    /// <summary>
+    /// Tells if the drone is recharging
+    /// </summary>
+    private bool IsRecharging(){
+        return myDrone.IsRecharging();
     }
 }
