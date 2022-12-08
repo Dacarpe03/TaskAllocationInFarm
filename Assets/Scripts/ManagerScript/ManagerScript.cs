@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using System;
+using System.IO;
+
 
 /// <summary>
 /// Class to make a comunication tabloid between cells and drones
@@ -33,6 +36,10 @@ public class ManagerScript : MonoBehaviour
     private Queue<int[]> tasks;
 
 
+    [Header("Save file location")]
+    private string dirPath = "";
+    private string fileName = "myfile.csv";
+
     /// <summary>
     /// First method to be invoked, will initialize the dictionaries and tasks queue
     /// </summary>
@@ -41,6 +48,7 @@ public class ManagerScript : MonoBehaviour
         seedsDict = new Dictionary<int, AbstractCellScript>();
         wateredDict = new Dictionary<int, AbstractCellScript>();
         tasks = new Queue<int[]>();
+        dirPath = Application.dataPath;
     }
 
 
@@ -50,7 +58,7 @@ public class ManagerScript : MonoBehaviour
     void Start(){
         drones = FindObjectsOfType<DroneScript>();
         Debug.Log(drones.Length);
-        StartCoroutine(ShowInfo());
+        StartCoroutine(SaveFile());
     }
 
 
@@ -92,7 +100,7 @@ public class ManagerScript : MonoBehaviour
         }
 
         if (participants.Count > 0){
-            int raffleWinnerIndex = Random.Range(0, participants.Count);
+            int raffleWinnerIndex = UnityEngine.Random.Range(0, participants.Count);
             int raffleWinner = participants[raffleWinnerIndex];
             drones[raffleWinner].AddTask(taskOffered);
         }
@@ -103,13 +111,28 @@ public class ManagerScript : MonoBehaviour
     /// <summary>
     /// Coroutine that executes in time intervals to follow the progress of the simulation
     /// </summary>
-    private IEnumerator ShowInfo(){
-        string report = "Empty Cells: " + emptDict.Count.ToString();
-        report += "\nSeed Cells:" + seedsDict.Count.ToString();
-        report += "\nWatered Cells:" + wateredDict.Count.ToString();
-        Debug.Log(report);
+    private IEnumerator SaveFile(){
+        int nEmptyCells = emptDict.Count;
+        int nSeedCells = seedsDict.Count;
+        int nWateredCells = wateredDict.Count;
+
+        string fullPath = Path.Combine(dirPath, fileName);
+
+        try {
+            Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+            string dataToStore = nEmptyCells.ToString() + "," + nSeedCells.ToString() + "," + nWateredCells.ToString() + "\n";
+
+            using (FileStream stream = new FileStream(fullPath, FileMode.Append)){
+                using (StreamWriter writer = new StreamWriter(stream)){
+                    writer.Write(dataToStore);
+                }
+            }
+        }
+        catch (Exception e){
+            Debug.LogError("Error ocurred when trying to save to file" + fullPath + "\n" + e);
+        }
         yield return new WaitForSeconds(timeToReport);
-        StartCoroutine(ShowInfo());
+        StartCoroutine(SaveFile());
     }
 
 
@@ -213,5 +236,6 @@ public class ManagerScript : MonoBehaviour
         
         return 0f;
     }
+
     
 }
