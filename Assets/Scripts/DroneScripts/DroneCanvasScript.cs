@@ -14,7 +14,11 @@ public class DroneCanvasScript : MonoBehaviour
 
     [Header("Text components references")]
     [SerializeField] private TextMeshProUGUI stateText;
-    private string[] possibleActivities = {"Resting", "Planting", "Watering", "Harvesting"};
+    private string[] possibleTasks = {"Resting", "Planting", "Watering", "Harvesting"};
+    private string[] possibleRecharges = {"Recharging nothing", "Recharging seeds", "Recharging water", "Dropping harvest"};
+    private string[] possibelResources = {"None", "Seeds left: ", "Litres left: ", "Capacity left: "};
+
+    private int maxCapacity;
     
 
     /// <summary>
@@ -22,6 +26,7 @@ public class DroneCanvasScript : MonoBehaviour
     /// </summary>
     private void Start(){
         myDrone = GetComponentInParent<DroneScript>();
+        maxCapacity = myDrone.GetCurrentResources();
     }
 
 
@@ -39,14 +44,30 @@ public class DroneCanvasScript : MonoBehaviour
     /// </summary>
     private void UpdateActivityText(){
         
-        string currentActivity = possibleActivities[0];
-        if(IsWorking()){
-            int activity = GetCurrentTask();
-            currentActivity= possibleActivities[activity];
+        string currentActivity = "Resting";
+        int activity = GetCurrentTask();
+        if (IsChanging()){
+            currentActivity = "Changing";
+            if (activity == 3 && GetCurrentResources() < maxCapacity){
+                currentActivity = "Dropping harvest";
+            }
+        }
+        else if (IsRecharging()){
+            currentActivity = possibleRecharges[activity];
+        }
+        else if(IsWorking()){
+            currentActivity = possibleTasks[activity];
+            currentActivity += AppendResources(activity);
+        }else{
+            currentActivity = "";
         }
         stateText.text = currentActivity;
     }
 
+
+    private string AppendResources(int taskType){
+        return "\n" + possibelResources[taskType] + GetCurrentResources().ToString() + "/" + maxCapacity.ToString();
+    }
 
     /// <summary>
     /// Gets the current activity of the drone
@@ -59,10 +80,28 @@ public class DroneCanvasScript : MonoBehaviour
     }
 
 
+    private int GetCurrentResources(){
+        return myDrone.GetCurrentResources();
+    }
+
+
     /// <summary>
-    /// Tells if the drone is currently
+    /// Tells if the drone is currently working on the task
     /// <summary>
     private bool IsWorking(){
         return myDrone.IsWorking();
+    }
+
+
+    /// <summary>
+    /// Tells if the drone is recharging
+    /// </summary>
+    private bool IsRecharging(){
+        return myDrone.IsRecharging();
+    }
+
+
+    private bool IsChanging(){
+        return myDrone.IsChanging();
     }
 }
