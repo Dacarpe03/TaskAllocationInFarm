@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5609827523842182355}
+  - component: {fileID: 290783867435331965}
   m_Layer: 0
   m_Name: DroneCanvas
   m_TagString: Untagged
@@ -32,6 +33,19 @@ Transform:
   m_Father: {fileID: 5375593829279102829}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
+--- !u!114 &290783867435331965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 410211553087609452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb37c4f8e38a87f47b1dbc4f43f83216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateText: {fileID: 7209683920284654629}
 --- !u!1 &1901967291770409375
 GameObject:
   m_ObjectHideFlags: 0

@@ -108,4 +108,26 @@ public class DroneScript : MonoBehaviour
         working = false;
     }
 
+
+    /// <summary>
+    /// Gets the current activity of the drone
+    /// </summary>
+    /// <returns>
+    /// The integer that identifies the drone activity
+    /// </returns>
+    public int GetCurrentTask(){
+        return currentTask;
+    }
+
+
+    /// <summary>
+    /// Tells if the drone is currently
+    /// <summary>
+    /// <returns>
+    /// True if the drone is performing a task
+    /// </returns>
+    public bool IsWorking(){
+        return working;
+    }
+
 }
