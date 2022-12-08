@@ -46,7 +46,13 @@ public class DroneCanvasScript : MonoBehaviour
         
         string currentActivity = "Resting";
         int activity = GetCurrentTask();
-        if (IsRecharging()){
+        if (IsChanging()){
+            currentActivity = "Changing";
+            if (activity == 3 && GetCurrentResources() < maxCapacity){
+                currentActivity = "Dropping harvest";
+            }
+        }
+        else if (IsRecharging()){
             currentActivity = possibleRecharges[activity];
         }
         else if(IsWorking()){
@@ -92,5 +98,10 @@ public class DroneCanvasScript : MonoBehaviour
     /// </summary>
     private bool IsRecharging(){
         return myDrone.IsRecharging();
+    }
+
+
+    private bool IsChanging(){
+        return myDrone.IsChanging();
     }
 }

@@ -12,13 +12,19 @@ public class DroneScript : MonoBehaviour
     [SerializeField] private float speed = 5f;
     [SerializeField] private float height = 5f;
     [SerializeField] private float rechargeTime = 2f;
+    [SerializeField] private float changeTime = 2f;
 
 
     [Header("Attributes to control task")]
     private Vector3 desiredPosition = new Vector3(10f, 10f, 10f);
     private Vector3[] tasksPositions;
+
     private bool working = false;
     private bool recharging = false;
+    private bool changing = false;
+
+    private bool firstTask = true;
+
     private int currentTask = 0;
     private int currentCell = -1;
     private int maxResources = 3;
@@ -56,8 +62,8 @@ public class DroneScript : MonoBehaviour
     /// Checks if the drone can perform a new task
     /// </summary>
     private void Update(){
-        if (!working && !recharging && tasksQueue.Count>0){
-            Debug.Log("next task");
+        if (!working && !recharging && !changing && tasksQueue.Count>0){
+            Debug.Log("Next task");
             GetNextTask();
         }
     }
@@ -76,15 +82,52 @@ public class DroneScript : MonoBehaviour
     /// </summary>
     private void GetNextTask(){
         int[] nextTask = tasksQueue.Dequeue();
-        currentTask = nextTask[0];
-        currentCell = nextTask[1];
+
         desiredPosition = manager.GetPositionOfCell(nextTask[0], nextTask[1]);
         desiredPosition.y = height;
-        if (currentResources > 0){
-            StartCoroutine(MoveToTaskPosition());
+        currentCell = nextTask[1];
+
+        if (currentTask != nextTask[0] && !firstTask){
+            StartCoroutine(ChangeTask(nextTask[0], false));
         }else{
-            StartCoroutine(MoveToRechargePosition(currentTask-1));
+            currentTask = nextTask[0];
+            if (currentResources > 0){
+                StartCoroutine(MoveToTaskPosition());
+            }else{
+                StartCoroutine(MoveToRechargePosition(currentTask-1));
+            }
         }
+    }
+
+
+    /// <summary>
+    /// Functions that changes the task
+    /// </summary>
+    private IEnumerator ChangeTask(int nextTask, bool dropped){
+        changing = true;
+        if (currentTask == 3 && !dropped){
+            //Debug.Log("Going to drop harvest");
+            StartCoroutine(DropHarvest(nextTask));
+        }else{
+            currentTask = nextTask;
+            if (nextTask == 3){
+                //Debug.Log("Going to harvest");
+                currentResources = maxResources;
+                yield return new WaitForSeconds(changeTime);
+                working = true;
+                changing = false;
+                StartCoroutine(MoveToTaskPosition());
+            }else{
+                //Debug.Log("Going to change");
+                currentResources = 0;
+                yield return new WaitForSeconds(changeTime);
+                recharging = true;
+                changing = false;
+                StartCoroutine(MoveToRechargePosition(currentTask-1));
+            }
+            //Debug.Log("Changed");
+        }
+        
     }
 
 
@@ -117,6 +160,7 @@ public class DroneScript : MonoBehaviour
     /// Moves to recharge position
     /// </summary>
     private IEnumerator MoveToRechargePosition(int taskType){
+        //Debug.Log("Going to recharge");
         recharging = true;
         Vector3 rechargePosition = tasksPositions[taskType];
         if(Vector3.Distance(this.transform.position, rechargePosition) > 0.1f){
@@ -131,6 +175,23 @@ public class DroneScript : MonoBehaviour
 
 
     /// <summary>
+    /// Goes to the car and drops the harvest before changing task
+    /// </summary>
+    private IEnumerator DropHarvest(int nextTask){
+        Vector3 rechargePosition = tasksPositions[2];
+        if(Vector3.Distance(this.transform.position, rechargePosition) > 0.1f){
+            this.transform.position = Vector3.MoveTowards(this.transform.position, rechargePosition, speed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+            StartCoroutine(DropHarvest(nextTask));
+        }else{
+            //Debug.Log("Got to the dropout");
+            StartCoroutine(ChangeTask(nextTask, true));
+            yield return null;
+        }
+    }
+
+
+    /// <summary>
     /// Triggers the task
     /// </summary>
     private IEnumerator DoTask(){
@@ -138,6 +199,7 @@ public class DroneScript : MonoBehaviour
         currentResources -= 1;
         yield return new WaitForSeconds(waitTime);
         working = false;
+        firstTask = false;
     }
 
 
@@ -194,6 +256,17 @@ public class DroneScript : MonoBehaviour
     /// </returns>
     public bool IsRecharging(){
         return recharging;
+    }
+
+
+    /// <summary>
+    /// Tells if the drone is changing task
+    /// </summary>
+    /// <returns>
+    /// True if the drone is changing task
+    /// </returns>
+    public bool IsChanging(){
+        return changing;
     }
 
 }
