@@ -23,7 +23,7 @@ public class DroneScript : MonoBehaviour
 
     [Header("Attributes to control task")]
     private Vector3 desiredPosition = new Vector3(10f, 10f, 10f);
-    private Vector3[] tasksPositions;
+    private Dictionary<int, Vector3> rechargePositions;
 
     private bool working = false;
     private bool recharging = false;
@@ -59,12 +59,16 @@ public class DroneScript : MonoBehaviour
         Vector3 seedPosition = new Vector3(-4f, height, 15f);
         Vector3 wellPosition = new Vector3(4f, height, 15f);
         Vector3 carPosition = new Vector3(15f, height, 0f);
-        tasksPositions = new Vector3[]{seedPosition, wellPosition, carPosition};
+
+        rechargePositions = new Dictionary<int, Vector3>();
+        rechargePositions.Add(plantTask, seedPosition);
+        rechargePositions.Add(waterTask, wellPosition);
+        rechargePositions.Add(harvestTask, carPosition);
 
         taskThresholds = new Dictionary<int, float>();
-        taskThresholds[plantTask] = maxThreshold;
-        taskThresholds[waterTask] = maxThreshold;
-        taskThresholds[harvestTask] = maxThreshold;
+        taskThresholds.Add(plantTask, maxThreshold);
+        taskThresholds.Add(waterTask, maxThreshold);
+        taskThresholds.Add(harvestTask, maxThreshold);
     }
 
 
@@ -112,7 +116,7 @@ public class DroneScript : MonoBehaviour
             if (currentResources > 0){
                 StartCoroutine(MoveToTaskPosition());
             }else{
-                StartCoroutine(MoveToRechargePosition(currentTask-1));
+                StartCoroutine(MoveToRechargePosition(currentTask));
             }
         }
     }
@@ -141,7 +145,7 @@ public class DroneScript : MonoBehaviour
                 yield return new WaitForSeconds(changeTime);
                 recharging = true;
                 changing = false;
-                StartCoroutine(MoveToRechargePosition(currentTask-1));
+                StartCoroutine(MoveToRechargePosition(currentTask));
             }
             //Debug.Log("Changed");
         }
@@ -180,7 +184,7 @@ public class DroneScript : MonoBehaviour
     private IEnumerator MoveToRechargePosition(int taskType){
         //Debug.Log("Going to recharge");
         recharging = true;
-        Vector3 rechargePosition = tasksPositions[taskType];
+        Vector3 rechargePosition = rechargePositions[taskType];
         if(Vector3.Distance(this.transform.position, rechargePosition) > 0.1f){
             this.transform.position = Vector3.MoveTowards(this.transform.position, rechargePosition, speed * Time.deltaTime);
             yield return new WaitForEndOfFrame();
@@ -196,7 +200,7 @@ public class DroneScript : MonoBehaviour
     /// Goes to the car and drops the harvest before changing task
     /// </summary>
     private IEnumerator DropHarvest(int nextTask){
-        Vector3 rechargePosition = tasksPositions[2];
+        Vector3 rechargePosition = rechargePositions[harvestTask];
         if(Vector3.Distance(this.transform.position, rechargePosition) > 0.1f){
             this.transform.position = Vector3.MoveTowards(this.transform.position, rechargePosition, speed * Time.deltaTime);
             yield return new WaitForEndOfFrame();
