@@ -156,8 +156,17 @@ public class DroneScript : MonoBehaviour
     /// <summay>
     /// Gets the bid
     /// </summary>
-    public float Bid(int[] task){
-        return 1f;
+    /// <param name="task">
+    /// task is an integer array. The first position is the task type, the second position the cell id that is requesting the task.
+    /// </param>
+    /// <param name="taskDemand">
+    /// The demand of the task type
+    /// </param>
+    public float Bid(int[] task, float taskDemand){
+        int taskType = task[0];
+        float bid = 1f;
+
+        return bid;
     }
 
 
@@ -207,12 +216,12 @@ public class DroneScript : MonoBehaviour
             StartCoroutine(DropHarvest(nextTask));
         }else{
             //Debug.Log("Got to the dropout");
-            StartCoroutine(ChangeTask(nextTask, true));
+            StartCoroutine(Discharge(nextTask));
             yield return null;
         }
     }
 
-
+    
     /// <summary>
     /// Triggers the task
     /// </summary>
@@ -234,6 +243,17 @@ public class DroneScript : MonoBehaviour
         yield return new WaitForSeconds(rechargeTime);
         recharging = false;
         StartCoroutine(MoveToTaskPosition());
+    }
+
+    /// <summary>
+    /// Discharges harvest
+    /// </summary>
+    private IEnumerator Discharge(int nextTask){
+        currentResources = maxResources;
+        working = true;
+        yield return new WaitForSeconds(rechargeTime);
+        recharging = false;
+        StartCoroutine(ChangeTask(nextTask, true));
     }
 
 

@@ -85,7 +85,7 @@ public class ManagerScript : MonoBehaviour
         float maxBid = 0;
 
         for (int i=0; i<drones.Length; i++){
-            float currentBid = drones[i].Bid(taskOffered);
+            float currentBid = drones[i].Bid(taskOffered, 20);
             bids[i] = currentBid;
             if (maxBid < currentBid){
                 maxBid = currentBid;
