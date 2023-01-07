@@ -81,11 +81,13 @@ public class ManagerScript : MonoBehaviour
     /// int[] with the task data
     /// </param>
     private void AuctionTask(int[] taskOffered){
+        int taskType = taskOffered[0];
+        int demand = GetTaskDemand(taskType);
+
         float[] bids = new float[drones.Length];
         float maxBid = 0;
-
         for (int i=0; i<drones.Length; i++){
-            float currentBid = drones[i].Bid(taskOffered, 20);
+            float currentBid = drones[i].Bid(taskOffered, demand);
             bids[i] = currentBid;
             if (maxBid < currentBid){
                 maxBid = currentBid;
@@ -105,6 +107,28 @@ public class ManagerScript : MonoBehaviour
             drones[raffleWinner].AddTask(taskOffered);
         }
         
+    }
+
+
+    /// <summary>
+    /// Method to get the number of cells given a type
+    /// </summary>
+    /// <param name"cellType">
+    /// The type of the cell to count
+    /// </param>
+    /// <returns>
+    /// Int. The count of the cell type
+    /// </returns>
+    private int GetTaskDemand(int cellType){
+        int demand = 0;
+        if (cellType==emptyCell){
+            demand = emptDict.Count;
+        } else if (cellType==seedCell){
+            demand = seedsDict.Count;
+        }else if (cellType==wateredCell){
+            demand = wateredDict.Count;
+        }
+        return demand;
     }
 
 
