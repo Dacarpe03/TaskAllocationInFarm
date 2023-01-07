@@ -15,6 +15,12 @@ public class DroneScript : MonoBehaviour
     [SerializeField] private float changeTime = 2f;
 
 
+    [Header("Tasks ids")]
+    private int plantTask = 1;
+    private int waterTask = 2;
+    private int harvestTask = 3;
+
+
     [Header("Attributes to control task")]
     private Vector3 desiredPosition = new Vector3(10f, 10f, 10f);
     private Vector3[] tasksPositions;
@@ -31,8 +37,15 @@ public class DroneScript : MonoBehaviour
     private int currentResources = 3;
 
 
+    [Header("Tasks thresholds")]
+    [SerializeField] private float minThreshold;
+    [SerializeField] private float maxThreshold;
+    private Dictionary<int, float> taskThresholds;
+
+
     [Header("Tasks Queue")]
     private Queue<int[]> tasksQueue; // Tasks queue
+
 
     [Header("Manager reference")]
     private ManagerScript manager;
@@ -47,6 +60,11 @@ public class DroneScript : MonoBehaviour
         Vector3 wellPosition = new Vector3(4f, height, 15f);
         Vector3 carPosition = new Vector3(15f, height, 0f);
         tasksPositions = new Vector3[]{seedPosition, wellPosition, carPosition};
+
+        taskThresholds = new Dictionary<int, float>();
+        taskThresholds[plantTask] = maxThreshold;
+        taskThresholds[waterTask] = maxThreshold;
+        taskThresholds[harvestTask] = maxThreshold;
     }
 
 
@@ -105,12 +123,12 @@ public class DroneScript : MonoBehaviour
     /// </summary>
     private IEnumerator ChangeTask(int nextTask, bool dropped){
         changing = true;
-        if (currentTask == 3 && !dropped){
+        if (currentTask == harvestTask && !dropped){
             //Debug.Log("Going to drop harvest");
             StartCoroutine(DropHarvest(nextTask));
         }else{
             currentTask = nextTask;
-            if (nextTask == 3){
+            if (nextTask == harvestTask){
                 //Debug.Log("Going to harvest");
                 currentResources = maxResources;
                 yield return new WaitForSeconds(changeTime);
