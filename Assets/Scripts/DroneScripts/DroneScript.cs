@@ -43,6 +43,10 @@ public class DroneScript : MonoBehaviour
     private Dictionary<int, float> taskThresholds;
 
 
+    [Header("Bidding parameters")]
+    private float alpha = 2f;
+    private float beta = 5f;
+
     [Header("Tasks Queue")]
     private Queue<int[]> tasksQueue; // Tasks queue
 
@@ -162,11 +166,26 @@ public class DroneScript : MonoBehaviour
     /// <param name="taskDemand">
     /// The demand of the task type
     /// </param>
+    /// <returns>
+    /// Float. The bid made for the task
+    /// </returns>
     public float Bid(int[] task, float taskDemand){
         int taskType = task[0];
         float bid = 1f;
-
+        float demandSquared = Mathf.Pow(taskDemand, 2);
+        float thresholdSquared = Mathf.Pow(taskThresholds[taskType], 2);
+        float timeComponent = GetTimeComponent(taskType);
+        float timeComponentSquared = Mathf.Pow(taskThresholds[taskType], 2*beta);
+        float probability = demandSquared/(demandSquared + alpha*thresholdSquared + timeComponentSquared);
         return bid;
+    }
+
+
+    /// <summary>
+    /// Gets the time component from the bidding system
+    /// </summary>
+    private float GetTimeComponent(int taskType){
+        return 2f;
     }
 
 
