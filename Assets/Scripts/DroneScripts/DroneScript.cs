@@ -196,9 +196,13 @@ public class DroneScript : MonoBehaviour
     /// </returns>
     private float GetTimeComponent(int taskType, int cellId){
         float taskTime = 2f;
+
         int numberOfTasksInQueue = tasksQueue.Count;
         int numberOfChanges = this.GetNumberOfChanges();
-        float timeComponent = taskTime * numberOfTasksInQueue + numberOfChanges * changeTime;
+
+        float timeToReach = CalculateTimeToReachCell(cellId);
+
+        float timeComponent = taskTime * numberOfTasksInQueue + (numberOfChanges * changeTime * rechargeTime) + timeToReach;
         return 2f;
     }
 
@@ -220,6 +224,18 @@ public class DroneScript : MonoBehaviour
             }
         }
         return numberOfChanges;
+    }
+
+
+    /// <summary>
+    /// Calculates the time to get to a cell after being in the last cell
+    /// </summary>
+    /// <returns>
+    /// Float. Time to get to a cell from the last cell in the queue
+    /// </returns>
+    private float CalculateTimeToReachCell(int cellId){
+        float timeToReach = 0f;
+        return timeToReach;
     }
 
 
