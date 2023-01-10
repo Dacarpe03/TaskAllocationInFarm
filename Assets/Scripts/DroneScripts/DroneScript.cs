@@ -44,6 +44,8 @@ public class DroneScript : MonoBehaviour
     [Header("Tasks thresholds")]
     [SerializeField] private float minThreshold;
     [SerializeField] private float maxThreshold;
+    [SerializeField] private float reduceRate = 7.85f;
+    [SerializeField] private float increaseRate = 17.73f;
     private Dictionary<int, float> taskThresholds;
 
 
@@ -104,10 +106,37 @@ public class DroneScript : MonoBehaviour
     /// </summary>
     public void AddTask(int[] newTask){
         tasksQueue.Enqueue(newTask);
+        ReduceThreshold(newTask[0]);
         lastTask = newTask[0];
         lastCellId = newTask[1];
     }
 
+
+    /// <summary>
+    /// Reduces the threshold for a given task
+    /// </summary>
+    /// <param name="taskType">
+    /// Int. The task type indicating the threshold to reduce
+    /// </param>
+    public void ReduceThreshold(int taskType){
+        taskThresholds[taskType] -= reduceRate;
+        if (taskThresholds[taskType] <= minThreshold){
+            taskThresholds[taskType] = minThreshold;
+        }
+    }
+
+    /// <summary>
+    /// Increases the threshold for a given task
+    /// </summary>
+    /// <param name="taskType">
+    /// Int. The task type indicating the threshold to increase
+    /// </param>
+    public void IncreaseThreshold(int taskType){
+        taskThresholds[taskType] += increaseRate;
+        if (taskThresholds[taskType] >= maxThreshold){
+            taskThresholds[taskType] = maxThreshold;
+        }
+    }
 
     /// <summary>
     /// Gets next task
