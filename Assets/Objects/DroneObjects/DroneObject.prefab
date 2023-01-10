@@ -229,8 +229,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   height: 5
-  rechargeTime: 2
-  changeTime: 2
+  rechargeTime: 3
+  changeTime: 5
+  minThreshold: 0
+  maxThreshold: 0
 --- !u!1 &5427149561735999820
 GameObject:
   m_ObjectHideFlags: 0

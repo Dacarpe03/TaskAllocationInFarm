@@ -171,10 +171,11 @@ public class DroneScript : MonoBehaviour
     /// </returns>
     public float Bid(int[] task, float taskDemand){
         int taskType = task[0];
+        int cellId = task[1];
         float bid = 1f;
         float demandSquared = Mathf.Pow(taskDemand, 2);
         float thresholdSquared = Mathf.Pow(taskThresholds[taskType], 2);
-        float timeComponent = GetTimeComponent(taskType);
+        float timeComponent = GetTimeComponent(taskType, cellId);
         float timeComponentSquared = Mathf.Pow(taskThresholds[taskType], 2*beta);
         float probability = demandSquared/(demandSquared + alpha*thresholdSquared + timeComponentSquared);
         return bid;
@@ -197,7 +198,7 @@ public class DroneScript : MonoBehaviour
         float taskTime = 2f;
         int numberOfTasksInQueue = tasksQueue.Count;
         int numberOfChanges = this.GetNumberOfChanges();
-        float timeComponent = taskTime * numberOfTasksInQueue + numberOfChanges;
+        float timeComponent = taskTime * numberOfTasksInQueue + numberOfChanges * changeTime;
         return 2f;
     }
 
