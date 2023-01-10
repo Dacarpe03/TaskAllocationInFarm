@@ -299,4 +299,18 @@ public class ManagerScript : MonoBehaviour
     }
 
     
+    /// <summary>
+    /// Increases the number of changes made
+    /// </summary>
+    public void IncreaseChanges(){
+        changes += 1;
+    }
+    
+
+    /// <summary>
+    /// Increase total seeds harvested
+    /// </summary>
+    public void AddHarvest(int recolectedSeeds){
+        total_harvest += recolectedSeeds;
+    }
 }

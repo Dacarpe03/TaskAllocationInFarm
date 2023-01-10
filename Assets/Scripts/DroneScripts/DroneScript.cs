@@ -172,6 +172,7 @@ public class DroneScript : MonoBehaviour
             //Debug.Log("Going to drop harvest");
             StartCoroutine(DropHarvest(nextTask));
         }else{
+            manager.IncreaseChanges();
             currentTask = nextTask;
             if (nextTask == harvestTask){
                 //Debug.Log("Going to harvest");
@@ -358,10 +359,12 @@ public class DroneScript : MonoBehaviour
         StartCoroutine(MoveToTaskPosition());
     }
 
+
     /// <summary>
     /// Discharges harvest
     /// </summary>
     private IEnumerator Discharge(int nextTask){
+        manager.AddHarvest(maxResources-currentResources);
         currentResources = maxResources;
         working = true;
         yield return new WaitForSeconds(rechargeTime);
