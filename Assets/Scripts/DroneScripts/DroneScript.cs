@@ -125,6 +125,7 @@ public class DroneScript : MonoBehaviour
         }
     }
 
+
     /// <summary>
     /// Increases the threshold for a given task
     /// </summary>
@@ -137,6 +138,7 @@ public class DroneScript : MonoBehaviour
             taskThresholds[taskType] = maxThreshold;
         }
     }
+
 
     /// <summary>
     /// Gets next task

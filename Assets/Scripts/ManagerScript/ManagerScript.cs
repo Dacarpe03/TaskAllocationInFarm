@@ -102,11 +102,15 @@ public class ManagerScript : MonoBehaviour
         }
 
         if (participants.Count > 0){
-            int raffleWinnerIndex = UnityEngine.Random.Range(0, participants.Count);
-            int raffleWinner = participants[raffleWinnerIndex];
+            int participantWinnerIndex = UnityEngine.Random.Range(0, participants.Count);
+            int raffleWinner = participants[participantWinnerIndex];
             drones[raffleWinner].AddTask(taskOffered);
-        }
-        
+            for (int i=0; i<drones.Length; i++){
+                if (i!=raffleWinner){
+                    drones[i].IncreaseThreshold(taskType);
+                }
+            }
+        }  
     }
 
 
