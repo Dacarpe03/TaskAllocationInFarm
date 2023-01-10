@@ -184,8 +184,41 @@ public class DroneScript : MonoBehaviour
     /// <summary>
     /// Gets the time component from the bidding system
     /// </summary>
-    private float GetTimeComponent(int taskType){
+    /// <param name="taskType">
+    /// Int. Represents the type of the task
+    /// </param>
+    /// <param name="cellId">
+    /// Int. The cell id that will be used to calculate the distance to it asking the manager
+    /// </param>
+    /// <returns>
+    /// Float. The time component from the bidding formula
+    /// </returns>
+    private float GetTimeComponent(int taskType, int cellId){
+        float taskTime = 2f;
+        int numberOfTasksInQueue = tasksQueue.Count;
+        int numberOfChanges = this.GetNumberOfChanges();
+        float timeComponent = taskTime * numberOfTasksInQueue + numberOfChanges;
         return 2f;
+    }
+
+
+    /// <summary>
+    /// Counts the number of changes to perform a task
+    /// </summary>
+    /// <returns>
+    /// Int. The number of changes that the drone will do in the next tasks
+    /// </returns>
+    private int GetNumberOfChanges(){
+        int numberOfChanges = 0;
+        int currentTaskType = currentTask;
+        foreach (int[] nextTaskArray in tasksQueue){
+            int next = nextTaskArray[0];
+            if (currentTaskType != next){
+                currentTaskType = next;
+                numberOfChanges += 1;
+            }
+        }
+        return numberOfChanges;
     }
 
 
