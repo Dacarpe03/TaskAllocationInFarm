@@ -20,6 +20,10 @@ public class DroneScript : MonoBehaviour
     private int waterTask = 2;
     private int harvestTask = 3;
 
+    [Header("Keep memory of the last element in the queue")]
+    private int lastCellId = -1;
+    private int lastTask = -1;
+
 
     [Header("Attributes to control task")]
     private Vector3 desiredPosition = new Vector3(10f, 10f, 10f);
@@ -100,6 +104,8 @@ public class DroneScript : MonoBehaviour
     /// </summary>
     public void AddTask(int[] newTask){
         tasksQueue.Enqueue(newTask);
+        lastTask = newTask[0];
+        lastCellId = newTask[1];
     }
 
 
@@ -200,7 +206,7 @@ public class DroneScript : MonoBehaviour
         int numberOfTasksInQueue = tasksQueue.Count;
         int numberOfChanges = this.GetNumberOfChanges();
 
-        float timeToReach = CalculateTimeToReachCell(cellId);
+        float timeToReach = CalculateTimeToReachCell(taskType, cellId);
 
         float timeComponent = taskTime * numberOfTasksInQueue + (numberOfChanges * changeTime * rechargeTime) + timeToReach;
         return 2f;
@@ -233,8 +239,15 @@ public class DroneScript : MonoBehaviour
     /// <returns>
     /// Float. Time to get to a cell from the last cell in the queue
     /// </returns>
-    private float CalculateTimeToReachCell(int cellId){
+    private float CalculateTimeToReachCell(int taskType, int cellId){
         float timeToReach = 0f;
+        if (lastCellId != -1){
+            Vector3 lastCellPosition = manager.GetPositionOfCell(lastTask, lastCellId);
+            Vector3 auctionTaskPosition = manager.GetPositionOfCell(taskType, cellId);
+            float distance = Vector3.Distance(lastCellPosition, auctionTaskPosition);
+            timeToReach = distance/speed;
+        }
+
         return timeToReach;
     }
 
