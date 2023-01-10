@@ -40,6 +40,10 @@ public class ManagerScript : MonoBehaviour
     private string dirPath = "";
     private string fileName = "myfile.csv";
 
+    [Header("Simulation results")]
+    private int changes=0;
+    private int total_harvest=0;
+
     /// <summary>
     /// First method to be invoked, will initialize the dictionaries and tasks queue
     /// </summary>
@@ -49,6 +53,7 @@ public class ManagerScript : MonoBehaviour
         wateredDict = new Dictionary<int, AbstractCellScript>();
         tasks = new Queue<int[]>();
         dirPath = Application.dataPath;
+        CreateFile();
     }
 
 
@@ -136,6 +141,30 @@ public class ManagerScript : MonoBehaviour
     }
 
 
+
+    /// <summary>
+    /// Method to create the csv file
+    /// </summary>
+    private void CreateFile(){
+        fileName = System.DateTime.Now.ToString("MM-dd-hh-mm-ss");
+        fileName += ".csv";
+        string fullPath = Path.Combine(dirPath, fileName);
+        try {
+            Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+            string dataToStore =  "empty_cells,seed_cells,watered_cells,changes,total_harvest\n";
+
+            using (FileStream stream = new FileStream(fullPath, FileMode.Append)){
+                using (StreamWriter writer = new StreamWriter(stream)){
+                    writer.Write(dataToStore);
+                }
+            }
+        }
+        catch (Exception e){
+            Debug.LogError("Error ocurred when trying to save to file" + fullPath + "\n" + e);
+        }
+    }
+
+
     /// <summary>
     /// Coroutine that executes in time intervals to follow the progress of the simulation
     /// </summary>
@@ -148,7 +177,11 @@ public class ManagerScript : MonoBehaviour
 
         try {
             Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
-            string dataToStore = nEmptyCells.ToString() + "," + nSeedCells.ToString() + "," + nWateredCells.ToString() + "\n";
+            string dataToStore = nEmptyCells.ToString() + "," + 
+                                 nSeedCells.ToString() + "," + 
+                                 nWateredCells.ToString() + "," + 
+                                 changes.ToString() + "," + 
+                                 total_harvest.ToString() + "\n";
 
             using (FileStream stream = new FileStream(fullPath, FileMode.Append)){
                 using (StreamWriter writer = new StreamWriter(stream)){
@@ -162,7 +195,7 @@ public class ManagerScript : MonoBehaviour
         yield return new WaitForSeconds(timeToReport);
         StartCoroutine(SaveFile());
     }
-
+    
 
     /// <summary>
     /// Methods to add a task to the queue
