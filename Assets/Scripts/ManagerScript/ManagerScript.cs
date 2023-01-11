@@ -38,7 +38,8 @@ public class ManagerScript : MonoBehaviour
 
     [Header("Save file location")]
     private string dirPath = "";
-    private string fileName = "myfile.csv";
+    private string fileName = "results.csv";
+    private string simulationName;
 
     [Header("Simulation results")]
     private int changes=0;
@@ -146,18 +147,21 @@ public class ManagerScript : MonoBehaviour
     /// Method to create the csv file
     /// </summary>
     private void CreateFile(){
-        fileName = System.DateTime.Now.ToString("MM-dd-hh-mm-ss");
-        fileName += ".csv";
+        simulationName = System.DateTime.Now.ToString("MM-dd-hh-mm-ss");
+        
         string fullPath = Path.Combine(dirPath, fileName);
         try {
-            Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
-            string dataToStore =  "empty_cells,seed_cells,watered_cells,changes,total_harvest\n";
+            if (!File.Exists(fullPath)){
+                Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+                string dataToStore =  "simulation_name,empty_cells,seed_cells,watered_cells,changes,total_harvest\n";
 
-            using (FileStream stream = new FileStream(fullPath, FileMode.Append)){
-                using (StreamWriter writer = new StreamWriter(stream)){
-                    writer.Write(dataToStore);
+                using (FileStream stream = new FileStream(fullPath, FileMode.Append)){
+                    using (StreamWriter writer = new StreamWriter(stream)){
+                        writer.Write(dataToStore);
+                    }
                 }
             }
+            
         }
         catch (Exception e){
             Debug.LogError("Error ocurred when trying to save to file" + fullPath + "\n" + e);
@@ -177,7 +181,8 @@ public class ManagerScript : MonoBehaviour
 
         try {
             Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
-            string dataToStore = nEmptyCells.ToString() + "," + 
+            string dataToStore = simulationName + "," +
+                                 nEmptyCells.ToString() + "," + 
                                  nSeedCells.ToString() + "," + 
                                  nWateredCells.ToString() + "," + 
                                  changes.ToString() + "," + 
@@ -305,7 +310,7 @@ public class ManagerScript : MonoBehaviour
     public void IncreaseChanges(){
         changes += 1;
     }
-    
+
 
     /// <summary>
     /// Increase total seeds harvested
