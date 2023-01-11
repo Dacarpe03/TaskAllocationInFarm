@@ -427,4 +427,14 @@ public class DroneScript : MonoBehaviour
         return changing;
     }
 
+
+    /// <summary>
+    /// Function that the cavas will call to retrieve threshold info to update sliders
+    /// </summary>
+    /// <returns>
+    /// Dictionary with key as int and value as float representing each threshold
+    /// </returns>
+    public Dictionary<int,float> GetThresholds(){
+        return taskThresholds;
+    }
 }

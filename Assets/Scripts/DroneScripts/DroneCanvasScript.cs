@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 
@@ -14,11 +15,19 @@ public class DroneCanvasScript : MonoBehaviour
 
     [Header("Text components references")]
     [SerializeField] private TextMeshProUGUI stateText;
+    [SerializeField] private Slider plantThreshold;
+    [SerializeField] private Slider waterThreshold;
+    [SerializeField] private Slider harvestThreshold;
+
     private string[] possibleTasks = {"Resting", "Planting", "Watering", "Harvesting"};
     private string[] possibleRecharges = {"Recharging nothing", "Recharging seeds", "Recharging water", "Dropping harvest"};
     private string[] possibelResources = {"None", "Seeds left: ", "Litres left: ", "Capacity left: "};
 
     private int maxCapacity;
+    
+    private int plantTask = 1;
+    private int waterTask = 2;
+    private int harvestTask = 3;
     
 
     /// <summary>
@@ -36,6 +45,7 @@ public class DroneCanvasScript : MonoBehaviour
     private void Update()
     {
         UpdateActivityText();
+        UpdateSliders();
     }
 
 
@@ -65,9 +75,21 @@ public class DroneCanvasScript : MonoBehaviour
     }
 
 
+    private void UpdateSliders(){
+        Dictionary<int, float> taskThresholds = GetThresholds();
+
+    }
+
+
     private string AppendResources(int taskType){
         return "\n" + possibelResources[taskType] + GetCurrentResources().ToString() + "/" + maxCapacity.ToString();
     }
+
+
+    private Dictionary<int,float> GetThresholds(){
+        return myDrone.GetThresholds();
+    }
+
 
     /// <summary>
     /// Gets the current activity of the drone
