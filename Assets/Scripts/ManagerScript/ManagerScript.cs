@@ -11,9 +11,9 @@ using System.IO;
 /// </summary>
 public class ManagerScript : MonoBehaviour
 {
-    [Header("Time to report")]
-    private float timeToReport = 10; // Time interval between countings
-
+    [Header("Times")]
+    [SerializeField] private float simulationTime = 15*60;
+    [SerializeField] private float timeToReport = 5; // Time interval between countings
 
     [Header("Cells dictionary")]
     Dictionary<int, AbstractCellScript> emptDict; // Empty cells dictionary
@@ -42,8 +42,9 @@ public class ManagerScript : MonoBehaviour
     private string simulationName;
 
     [Header("Simulation results")]
-    private int changes=0;
-    private int total_harvest=0;
+    private int total_changes = 0;
+    private int total_tasks = 0;
+    private int total_reloads = 0;
 
     /// <summary>
     /// First method to be invoked, will initialize the dictionaries and tasks queue
@@ -54,7 +55,6 @@ public class ManagerScript : MonoBehaviour
         wateredDict = new Dictionary<int, AbstractCellScript>();
         tasks = new List<int[]>();
         dirPath = Application.dataPath;
-        CreateFile();
     }
 
 
@@ -64,6 +64,7 @@ public class ManagerScript : MonoBehaviour
     void Start(){
         drones = FindObjectsOfType<DroneScript>();
         Debug.Log(drones.Length);
+        CreateFile();
         StartCoroutine(SaveFile());
     }
 
@@ -155,8 +156,11 @@ public class ManagerScript : MonoBehaviour
         try {
             if (!File.Exists(fullPath)){
                 Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
-                string dataToStore =  "simulation_name,empty_cells,seed_cells,watered_cells,changes,total_harvest\n";
-
+                string dataToStore =  "simulation_name,empty_cells,seed_cells,watered_cells,total_changes,total_tasks,total_reloads";
+                for (int i=0; i<drones.Length; i++){
+                    dataToStore += ",drone" + i.ToString() + "_threshold," + ",drone" + i.ToString() + "_speciality";
+                }
+                dataToStore += "\n";
                 using (FileStream stream = new FileStream(fullPath, FileMode.Append)){
                     using (StreamWriter writer = new StreamWriter(stream)){
                         writer.Write(dataToStore);
@@ -187,9 +191,16 @@ public class ManagerScript : MonoBehaviour
                                  nEmptyCells.ToString() + "," + 
                                  nSeedCells.ToString() + "," + 
                                  nWateredCells.ToString() + "," + 
-                                 changes.ToString() + "," + 
-                                 total_harvest.ToString() + "\n";
+                                 total_changes.ToString() + "," + 
+                                 total_tasks.ToString() + "," + 
+                                 total_reloads.ToString();
 
+            for (int i=0; i<drones.Length; i++){
+                    float minThreshold = drones[i].GetMinThreshold();
+                    int speciality = drones[i].GetSpeciality();
+                    dataToStore += "," + minThreshold.ToString("#.00") + "," + speciality.ToString();
+            }
+            dataToStore += "\n";
             using (FileStream stream = new FileStream(fullPath, FileMode.Append)){
                 using (StreamWriter writer = new StreamWriter(stream)){
                     writer.Write(dataToStore);
@@ -310,14 +321,22 @@ public class ManagerScript : MonoBehaviour
     /// Increases the number of changes made
     /// </summary>
     public void IncreaseChanges(){
-        changes += 1;
+        total_changes += 1;
     }
 
 
     /// <summary>
-    /// Increase total seeds harvested
+    /// Increase total tasks done
     /// </summary>
-    public void AddHarvest(int recolectedSeeds){
-        total_harvest += recolectedSeeds;
+    public void IncreaseTask(){
+        total_tasks += 1;
+    }
+    
+
+    /// <summary>
+    /// Increase total reloads done
+    /// </summary>
+    public void IncreaseReloads(){
+        total_reloads += 1;
     }
 }

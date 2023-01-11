@@ -349,6 +349,7 @@ public class DroneScript : MonoBehaviour
     /// Triggers the task
     /// </summary>
     private IEnumerator DoTask(){
+        manager.IncreaseTask();
         float waitTime = manager.TriggerTask(currentTask, currentCell);
         currentResources -= 1;
         yield return new WaitForSeconds(waitTime);
@@ -361,6 +362,7 @@ public class DroneScript : MonoBehaviour
     /// Recharges to max capacity
     /// </summary>
     private IEnumerator Recharge(){
+        manager.IncreaseReloads();
         currentResources = maxResources;
         working = true;
         yield return new WaitForSeconds(rechargeTime);
@@ -373,7 +375,6 @@ public class DroneScript : MonoBehaviour
     /// Discharges harvest
     /// </summary>
     private IEnumerator Discharge(int nextTask){
-        manager.AddHarvest(maxResources-currentResources);
         currentResources = maxResources;
         working = true;
         yield return new WaitForSeconds(rechargeTime);
@@ -445,5 +446,41 @@ public class DroneScript : MonoBehaviour
     /// </returns>
     public Dictionary<int,float> GetThresholds(){
         return taskThresholds;
+    }
+
+
+    /// <summary>
+    /// Method to retrieve the minimum threshold of the drone
+    /// </summary>
+    /// <returns>
+    /// Float. The minimum threshold in the taskThresholds dictionary
+    /// </returns>
+    public float GetMinThreshold(){
+        float min = maxThreshold;
+        foreach (KeyValuePair<int,float> threshold in taskThresholds){
+            if (min >= threshold.Value){
+                min = threshold.Value;
+            }
+        }
+        return min;
+    }
+
+
+    /// <summary>
+    /// Method to retrieve the speciality task of the drone, ie, the one with minimum threshold \\
+    /// </summary>
+    /// <returns>
+    /// Int. The task type in which the drone is specialized
+    /// </returns>
+    public int GetSpeciality(){
+        int speciality = 0;
+        float min = maxThreshold;
+        foreach (KeyValuePair<int,float> threshold in taskThresholds){
+            if (min >= threshold.Value){
+                min = threshold.Value;
+                speciality = threshold.Key;
+            }
+        }
+        return speciality;
     }
 }

@@ -794,9 +794,9 @@ MonoBehaviour:
   changeTime: 5
   minThreshold: 5
   maxThreshold: 100
-  reduceRate: 5
+  reduceRate: 10
   increaseRate: 2
-  alpha: 200
+  alpha: 400
   beta: 2
   maxQueueSize: 10
 --- !u!1 &5427149561735999820
