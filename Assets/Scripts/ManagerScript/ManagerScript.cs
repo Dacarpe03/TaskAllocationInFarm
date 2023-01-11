@@ -4,7 +4,7 @@ using UnityEngine;
 
 using System;
 using System.IO;
-
+using System.Globalization;
 
 /// <summary>
 /// Class to make a comunication tabloid between cells and drones
@@ -158,7 +158,7 @@ public class ManagerScript : MonoBehaviour
                 Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
                 string dataToStore =  "simulation_name,empty_cells,seed_cells,watered_cells,total_changes,total_tasks,total_reloads";
                 for (int i=0; i<drones.Length; i++){
-                    dataToStore += ",drone" + i.ToString() + "_threshold," + ",drone" + i.ToString() + "_speciality";
+                    dataToStore += ",drone" + i.ToString() + "_threshold" + ",drone" + i.ToString() + "_speciality";
                 }
                 dataToStore += "\n";
                 using (FileStream stream = new FileStream(fullPath, FileMode.Append)){
@@ -198,7 +198,7 @@ public class ManagerScript : MonoBehaviour
             for (int i=0; i<drones.Length; i++){
                     float minThreshold = drones[i].GetMinThreshold();
                     int speciality = drones[i].GetSpeciality();
-                    dataToStore += "," + minThreshold.ToString("#.00") + "," + speciality.ToString();
+                    dataToStore += "," + minThreshold.ToString("#.00", CultureInfo.InvariantCulture) + "," + speciality.ToString();
             }
             dataToStore += "\n";
             using (FileStream stream = new FileStream(fullPath, FileMode.Append)){

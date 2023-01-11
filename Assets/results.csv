@@ -1,5 +1,6 @@
-simulation_name,empty_cells,seed_cells,watered_cells,changes,total_tasks,reloads,drone0,drone1,drone2,drone3,drone4,drone5
-01-11-11-16-38,0,0,0,0,0
-01-11-11-16-38,24,22,18,1,0
-01-11-11-16-38,26,21,17,4,3
-01-11-11-16-38,27,21,16,5,3
+simulation_name,empty_cells,seed_cells,watered_cells,total_changes,total_tasks,total_reloads,drone0_threshold,drone0_speciality,drone1_threshold,drone1_speciality,drone2_threshold,drone2_speciality,drone3_threshold,drone3_speciality,drone4_threshold,drone4_speciality,drone5_threshold,drone5_speciality
+01-11-11-38-25,0,0,0,0,0,0,5.00,3,5.00,3,5.00,3,5.00,3,5.00,3,5.00,3
+01-11-11-38-25,19,24,21,1,7,0,17.00,1,13.00,2,9.00,1,11.00,2,9.00,3,9.00,1
+01-11-11-38-25,19,23,22,5,8,0,19.00,2,15.00,2,5.00,1,11.00,3,13.00,3,11.00,1
+01-11-11-38-25,19,23,22,6,10,2,19.00,2,15.00,2,5.00,1,11.00,3,13.00,3,11.00,1
+01-11-11-38-25,21,23,20,6,12,4,19.00,2,15.00,2,9.00,1,11.00,3,9.00,1,15.00,1
