@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 using System;
 using System.IO;
@@ -66,6 +67,7 @@ public class ManagerScript : MonoBehaviour
         Debug.Log(drones.Length);
         CreateFile();
         StartCoroutine(SaveFile());
+        StartCoroutine(FinishSimulation());
     }
 
 
@@ -338,5 +340,10 @@ public class ManagerScript : MonoBehaviour
     /// </summary>
     public void IncreaseReloads(){
         total_reloads += 1;
+    }
+
+    private IEnumerator FinishSimulation(){
+        yield return new WaitForSeconds(simulationTime);
+        Application.Quit();
     }
 }
