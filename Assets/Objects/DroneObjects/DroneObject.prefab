@@ -122,6 +122,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stateText: {fileID: 7209683920284654629}
+  plantThreshold: {fileID: 46650221962665507}
+  waterThreshold: {fileID: 5950960396810031497}
+  harvestThreshold: {fileID: 5302904637653169363}
 --- !u!1 &1816030922602715710
 GameObject:
   m_ObjectHideFlags: 0
@@ -785,14 +788,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c2f715ecf1a1d642a82115723f1b3ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 10
   height: 5
-  rechargeTime: 3
-  changeTime: 5
-  minThreshold: 0
-  maxThreshold: 0
-  reduceRate: 7.85
-  increaseRate: 17.73
+  rechargeTime: 1
+  changeTime: 1
+  minThreshold: 5.5
+  maxThreshold: 100
+  reduceRate: 3
+  increaseRate: 1
 --- !u!1 &5427149561735999820
 GameObject:
   m_ObjectHideFlags: 0

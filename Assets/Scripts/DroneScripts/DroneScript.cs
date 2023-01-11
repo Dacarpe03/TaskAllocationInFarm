@@ -42,8 +42,8 @@ public class DroneScript : MonoBehaviour
 
 
     [Header("Tasks thresholds")]
-    [SerializeField] private float minThreshold;
-    [SerializeField] private float maxThreshold;
+    [SerializeField] private float minThreshold = 5.5f;
+    [SerializeField] private float maxThreshold = 40f;
     [SerializeField] private float reduceRate = 7.85f;
     [SerializeField] private float increaseRate = 17.73f;
     private Dictionary<int, float> taskThresholds;
@@ -76,9 +76,9 @@ public class DroneScript : MonoBehaviour
         rechargePositions.Add(harvestTask, carPosition);
 
         taskThresholds = new Dictionary<int, float>();
-        taskThresholds.Add(plantTask, maxThreshold);
-        taskThresholds.Add(waterTask, maxThreshold);
-        taskThresholds.Add(harvestTask, maxThreshold);
+        taskThresholds.Add(plantTask, minThreshold);
+        taskThresholds.Add(waterTask, minThreshold);
+        taskThresholds.Add(harvestTask, minThreshold);
     }
 
 
@@ -275,6 +275,9 @@ public class DroneScript : MonoBehaviour
         float timeToReach = 0f;
         if (lastCellId != -1){
             Vector3 lastCellPosition = manager.GetPositionOfCell(lastTask, lastCellId);
+            if (lastCellPosition.Equals(Vector3.zero)){
+                lastCellPosition = this.transform.position;
+            }
             Vector3 auctionTaskPosition = manager.GetPositionOfCell(taskType, cellId);
             float distance = Vector3.Distance(lastCellPosition, auctionTaskPosition);
             timeToReach = distance/speed;

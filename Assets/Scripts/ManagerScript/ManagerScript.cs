@@ -231,11 +231,11 @@ public class ManagerScript : MonoBehaviour
     /// </returns>
     public int AddCell(AbstractCellScript newCell, int type){
         if (type==emptyCell){
-            emptDict[cellsCount] = newCell;
+            emptDict.Add(cellsCount, newCell);
         } else if (type==seedCell){
-            seedsDict[cellsCount] = newCell;
+            seedsDict.Add(cellsCount, newCell);
         }else if (type==wateredCell){
-            wateredDict[cellsCount] = newCell;
+            wateredDict.Add(cellsCount, newCell);
         }
 
         int cellId = cellsCount;
@@ -276,11 +276,11 @@ public class ManagerScript : MonoBehaviour
     /// Cell id of the dictionary
     /// </param>
     public Vector3 GetPositionOfCell(int taskType, int cellId){
-        if (taskType==emptyCell){
+        if (taskType==emptyCell && emptDict.ContainsKey(cellId)){
             return emptDict[cellId].GetPosition();
-        } else if (taskType==seedCell){
+        } else if (taskType==seedCell && seedsDict.ContainsKey(cellId)){
             return seedsDict[cellId].GetPosition();
-        }else if (taskType==wateredCell){
+        }else if (taskType==wateredCell && wateredDict.ContainsKey(cellId)){
             return wateredDict[cellId].GetPosition();
         }
 

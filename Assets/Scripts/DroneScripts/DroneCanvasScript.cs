@@ -28,7 +28,7 @@ public class DroneCanvasScript : MonoBehaviour
     private int plantTask = 1;
     private int waterTask = 2;
     private int harvestTask = 3;
-    
+
 
     /// <summary>
     /// Gets a reference to the drone script
@@ -68,8 +68,6 @@ public class DroneCanvasScript : MonoBehaviour
         else if(IsWorking()){
             currentActivity = possibleTasks[activity];
             currentActivity += AppendResources(activity);
-        }else{
-            currentActivity = "";
         }
         stateText.text = currentActivity;
     }
@@ -77,7 +75,14 @@ public class DroneCanvasScript : MonoBehaviour
 
     private void UpdateSliders(){
         Dictionary<int, float> taskThresholds = GetThresholds();
-
+        float totalThreshold = 0f;
+        foreach(KeyValuePair<int, float> threshold in taskThresholds){
+            totalThreshold += threshold.Value;
+        }
+        // Debug.Log(totalThreshold);
+        plantThreshold.value = taskThresholds[plantTask]/totalThreshold;
+        waterThreshold.value = taskThresholds[waterTask]/totalThreshold;
+        harvestThreshold.value = taskThresholds[harvestTask]/totalThreshold;
     }
 
 
