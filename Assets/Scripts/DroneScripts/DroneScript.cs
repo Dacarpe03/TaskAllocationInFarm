@@ -20,6 +20,7 @@ public class DroneScript : MonoBehaviour
     private int waterTask = 2;
     private int harvestTask = 3;
 
+
     [Header("Keep memory of the last element in the queue")]
     private int lastCellId = -1;
     private int lastTask = -1;
@@ -50,10 +51,12 @@ public class DroneScript : MonoBehaviour
 
 
     [Header("Bidding parameters")]
-    private float alpha = 2f;
-    private float beta = 5f;
+    [SerializeField] private float alpha = 2f;
+    [SerializeField] private float beta = 5f;
+
 
     [Header("Tasks Queue")]
+    [SerializeField] private int maxQueueSize = 10;
     private Queue<int[]> tasksQueue; // Tasks queue
 
 
@@ -208,6 +211,9 @@ public class DroneScript : MonoBehaviour
     /// Float. The bid made for the task
     /// </returns>
     public float Bid(int[] task, float taskDemand){
+        if (tasksQueue.Count >= maxQueueSize){
+            return 0f;
+        }
         int taskType = task[0];
         int cellId = task[1];
         float bid = 1f;

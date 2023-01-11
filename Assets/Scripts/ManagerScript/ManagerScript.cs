@@ -33,7 +33,7 @@ public class ManagerScript : MonoBehaviour
 
 
     [Header("Tasks Queue")]
-    private Queue<int[]> tasks;
+    private List<int[]> tasks;
 
 
     [Header("Save file location")]
@@ -52,7 +52,7 @@ public class ManagerScript : MonoBehaviour
         emptDict = new Dictionary<int, AbstractCellScript>();
         seedsDict = new Dictionary<int, AbstractCellScript>();
         wateredDict = new Dictionary<int, AbstractCellScript>();
-        tasks = new Queue<int[]>();
+        tasks = new List<int[]>();
         dirPath = Application.dataPath;
         CreateFile();
     }
@@ -74,8 +74,9 @@ public class ManagerScript : MonoBehaviour
     void Update(){
         if (tasks.Count > 0){
             Debug.Log("offering task");
-            int[] taskOffered = tasks.Dequeue();
-            AuctionTask(taskOffered);
+            int randomIndex = UnityEngine.Random.Range(0, tasks.Count);
+            int[] taskOffered = tasks[randomIndex];
+            AuctionTask(taskOffered, randomIndex);
         }
     }
 
@@ -86,7 +87,7 @@ public class ManagerScript : MonoBehaviour
     /// <param name="taskOffered">
     /// int[] with the task data
     /// </param>
-    private void AuctionTask(int[] taskOffered){
+    private void AuctionTask(int[] taskOffered, int taskId){
         int taskType = taskOffered[0];
         int demand = GetTaskDemand(taskType);
 
@@ -107,7 +108,7 @@ public class ManagerScript : MonoBehaviour
             }
         }
 
-        if (participants.Count > 0){
+        if (participants.Count > 0 && maxBid > 0){
             int participantWinnerIndex = UnityEngine.Random.Range(0, participants.Count);
             int raffleWinner = participants[participantWinnerIndex];
             drones[raffleWinner].AddTask(taskOffered);
@@ -116,6 +117,7 @@ public class ManagerScript : MonoBehaviour
                     drones[i].IncreaseThreshold(taskType);
                 }
             }
+            tasks.RemoveAt(taskId);
         }  
     }
 
@@ -213,7 +215,7 @@ public class ManagerScript : MonoBehaviour
     /// </param>
     private void AddTask(int taskType, int cellId){
         int[] newTask = new int[]{taskType, cellId};
-        tasks.Enqueue(newTask);
+        tasks.Add(newTask);
     }
 
 

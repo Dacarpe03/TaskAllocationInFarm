@@ -788,14 +788,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c2f715ecf1a1d642a82115723f1b3ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
+  speed: 5
   height: 5
-  rechargeTime: 1
-  changeTime: 1
-  minThreshold: 5.5
+  rechargeTime: 3
+  changeTime: 5
+  minThreshold: 5
   maxThreshold: 100
   reduceRate: 5
-  increaseRate: 1
+  increaseRate: 2
+  alpha: 200
+  beta: 2
+  maxQueueSize: 10
 --- !u!1 &5427149561735999820
 GameObject:
   m_ObjectHideFlags: 0
