@@ -794,7 +794,7 @@ MonoBehaviour:
   changeTime: 1
   minThreshold: 5.5
   maxThreshold: 100
-  reduceRate: 3
+  reduceRate: 5
   increaseRate: 1
 --- !u!1 &5427149561735999820
 GameObject:
