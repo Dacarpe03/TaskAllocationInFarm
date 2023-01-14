@@ -733,7 +733,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3411587393290017413, guid: b66f9e7129c5e5247bd295c772f56154, type: 3}
       propertyPath: simulationTime
-      value: 3
+      value: 900
       objectReference: {fileID: 0}
     - target: {fileID: 3411587393290017414, guid: b66f9e7129c5e5247bd295c772f56154, type: 3}
       propertyPath: m_Name

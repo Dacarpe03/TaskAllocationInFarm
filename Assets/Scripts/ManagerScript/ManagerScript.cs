@@ -344,6 +344,6 @@ public class ManagerScript : MonoBehaviour
 
     private IEnumerator FinishSimulation(){
         yield return new WaitForSeconds(simulationTime);
-        Application.Quit();
+        SceneManager.LoadScene(0);
     }
 }
