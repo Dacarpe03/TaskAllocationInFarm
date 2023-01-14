@@ -13,6 +13,7 @@ public class DroneScript : MonoBehaviour
     [SerializeField] private float height = 5f;
     [SerializeField] private float rechargeTime = 2f;
     [SerializeField] private float changeTime = 2f;
+    [SerializeField] private bool improved = false;
 
 
     [Header("Tasks ids")]
@@ -40,6 +41,8 @@ public class DroneScript : MonoBehaviour
     private int currentCell = -1;
     private int maxResources = 3;
     private int currentResources = 3;
+
+    private int consecutiveTasks = 1;
 
 
     [Header("Tasks thresholds")]
@@ -107,11 +110,18 @@ public class DroneScript : MonoBehaviour
     /// <summary>
     /// Adds a task to the queue
     /// </summary>
-    public void AddTask(int[] newTask){
+    public float AddTask(int[] newTask){
         tasksQueue.Enqueue(newTask);
-        ReduceThreshold(newTask[0]);
+        if (newTask[0] == lastTask){
+            consecutiveTasks += 1;
+        }else{
+            consecutiveTasks = 1;
+        }
+        float fraction = ReduceThreshold(newTask[0]);
         lastTask = newTask[0];
         lastCellId = newTask[1];
+
+        return fraction;
     }
 
 
@@ -121,11 +131,16 @@ public class DroneScript : MonoBehaviour
     /// <param name="taskType">
     /// Int. The task type indicating the threshold to reduce
     /// </param>
-    public void ReduceThreshold(int taskType){
-        taskThresholds[taskType] -= reduceRate;
+    public float ReduceThreshold(int taskType){
+        float fraction = maxResources;
+        if (improved){
+            fraction = Mathf.Min(consecutiveTasks, maxResources);
+        }
+        taskThresholds[taskType] -= fraction * reduceRate / maxResources;
         if (taskThresholds[taskType] <= minThreshold){
             taskThresholds[taskType] = minThreshold;
         }
+        return fraction;
     }
 
 
@@ -135,8 +150,8 @@ public class DroneScript : MonoBehaviour
     /// <param name="taskType">
     /// Int. The task type indicating the threshold to increase
     /// </param>
-    public void IncreaseThreshold(int taskType){
-        taskThresholds[taskType] += increaseRate;
+    public void IncreaseThreshold(int taskType, float fraction){
+        taskThresholds[taskType] += fraction * increaseRate / maxResources;
         if (taskThresholds[taskType] >= maxThreshold){
             taskThresholds[taskType] = maxThreshold;
         }

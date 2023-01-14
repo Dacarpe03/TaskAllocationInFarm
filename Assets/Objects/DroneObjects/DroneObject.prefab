@@ -792,6 +792,7 @@ MonoBehaviour:
   height: 5
   rechargeTime: 3
   changeTime: 5
+  improved: 1
   minThreshold: 5
   maxThreshold: 100
   reduceRate: 10

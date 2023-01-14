@@ -114,10 +114,10 @@ public class ManagerScript : MonoBehaviour
         if (participants.Count > 0 && maxBid > 0){
             int participantWinnerIndex = UnityEngine.Random.Range(0, participants.Count);
             int raffleWinner = participants[participantWinnerIndex];
-            drones[raffleWinner].AddTask(taskOffered);
+            float fraction = drones[raffleWinner].AddTask(taskOffered);
             for (int i=0; i<drones.Length; i++){
                 if (i!=raffleWinner){
-                    drones[i].IncreaseThreshold(taskType);
+                    drones[i].IncreaseThreshold(taskType, fraction);
                 }
             }
             tasks.RemoveAt(taskId);
