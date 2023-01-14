@@ -1,19 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 using System;
 using System.IO;
-
+using System.Globalization;
 
 /// <summary>
 /// Class to make a comunication tabloid between cells and drones
 /// </summary>
 public class ManagerScript : MonoBehaviour
 {
-    [Header("Time to report")]
-    private float timeToReport = 10; // Time interval between countings
-
+    [Header("Times")]
+    [SerializeField] private float simulationTime = 15*60;
+    [SerializeField] private float timeToReport = 5; // Time interval between countings
 
     [Header("Cells dictionary")]
     Dictionary<int, AbstractCellScript> emptDict; // Empty cells dictionary
@@ -33,12 +34,18 @@ public class ManagerScript : MonoBehaviour
 
 
     [Header("Tasks Queue")]
-    private Queue<int[]> tasks;
+    private List<int[]> tasks;
 
 
     [Header("Save file location")]
     private string dirPath = "";
-    private string fileName = "myfile.csv";
+    private string fileName = "results.csv";
+    private string simulationName;
+
+    [Header("Simulation results")]
+    private int total_changes = 0;
+    private int total_tasks = 0;
+    private int total_reloads = 0;
 
     /// <summary>
     /// First method to be invoked, will initialize the dictionaries and tasks queue
@@ -47,7 +54,7 @@ public class ManagerScript : MonoBehaviour
         emptDict = new Dictionary<int, AbstractCellScript>();
         seedsDict = new Dictionary<int, AbstractCellScript>();
         wateredDict = new Dictionary<int, AbstractCellScript>();
-        tasks = new Queue<int[]>();
+        tasks = new List<int[]>();
         dirPath = Application.dataPath;
     }
 
@@ -58,7 +65,9 @@ public class ManagerScript : MonoBehaviour
     void Start(){
         drones = FindObjectsOfType<DroneScript>();
         Debug.Log(drones.Length);
+        CreateFile();
         StartCoroutine(SaveFile());
+        StartCoroutine(FinishSimulation());
     }
 
 
@@ -68,8 +77,9 @@ public class ManagerScript : MonoBehaviour
     void Update(){
         if (tasks.Count > 0){
             Debug.Log("offering task");
-            int[] taskOffered = tasks.Dequeue();
-            AuctionTask(taskOffered);
+            int randomIndex = UnityEngine.Random.Range(0, tasks.Count);
+            int[] taskOffered = tasks[randomIndex];
+            AuctionTask(taskOffered, randomIndex);
         }
     }
 
@@ -80,12 +90,14 @@ public class ManagerScript : MonoBehaviour
     /// <param name="taskOffered">
     /// int[] with the task data
     /// </param>
-    private void AuctionTask(int[] taskOffered){
+    private void AuctionTask(int[] taskOffered, int taskId){
+        int taskType = taskOffered[0];
+        int demand = GetTaskDemand(taskType);
+
         float[] bids = new float[drones.Length];
         float maxBid = 0;
-
         for (int i=0; i<drones.Length; i++){
-            float currentBid = drones[i].Bid(taskOffered);
+            float currentBid = drones[i].Bid(taskOffered, demand);
             bids[i] = currentBid;
             if (maxBid < currentBid){
                 maxBid = currentBid;
@@ -99,12 +111,69 @@ public class ManagerScript : MonoBehaviour
             }
         }
 
-        if (participants.Count > 0){
-            int raffleWinnerIndex = UnityEngine.Random.Range(0, participants.Count);
-            int raffleWinner = participants[raffleWinnerIndex];
+        if (participants.Count > 0 && maxBid > 0){
+            int participantWinnerIndex = UnityEngine.Random.Range(0, participants.Count);
+            int raffleWinner = participants[participantWinnerIndex];
             drones[raffleWinner].AddTask(taskOffered);
+            for (int i=0; i<drones.Length; i++){
+                if (i!=raffleWinner){
+                    drones[i].IncreaseThreshold(taskType);
+                }
+            }
+            tasks.RemoveAt(taskId);
+        }  
+    }
+
+
+    /// <summary>
+    /// Method to get the number of cells given a type
+    /// </summary>
+    /// <param name"cellType">
+    /// The type of the cell to count
+    /// </param>
+    /// <returns>
+    /// Int. The count of the cell type
+    /// </returns>
+    private int GetTaskDemand(int cellType){
+        int demand = 0;
+        if (cellType==emptyCell){
+            demand = emptDict.Count;
+        } else if (cellType==seedCell){
+            demand = seedsDict.Count;
+        }else if (cellType==wateredCell){
+            demand = wateredDict.Count;
         }
+        return demand;
+    }
+
+
+
+    /// <summary>
+    /// Method to create the csv file
+    /// </summary>
+    private void CreateFile(){
+        simulationName = System.DateTime.Now.ToString("MM-dd-hh-mm-ss");
         
+        string fullPath = Path.Combine(dirPath, fileName);
+        try {
+            if (!File.Exists(fullPath)){
+                Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+                string dataToStore =  "simulation_name,empty_cells,seed_cells,watered_cells,total_changes,total_tasks,total_reloads";
+                for (int i=0; i<drones.Length; i++){
+                    dataToStore += ",drone" + i.ToString() + "_threshold" + ",drone" + i.ToString() + "_speciality";
+                }
+                dataToStore += "\n";
+                using (FileStream stream = new FileStream(fullPath, FileMode.Append)){
+                    using (StreamWriter writer = new StreamWriter(stream)){
+                        writer.Write(dataToStore);
+                    }
+                }
+            }
+            
+        }
+        catch (Exception e){
+            Debug.LogError("Error ocurred when trying to save to file" + fullPath + "\n" + e);
+        }
     }
 
 
@@ -120,8 +189,20 @@ public class ManagerScript : MonoBehaviour
 
         try {
             Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
-            string dataToStore = nEmptyCells.ToString() + "," + nSeedCells.ToString() + "," + nWateredCells.ToString() + "\n";
+            string dataToStore = simulationName + "," +
+                                 nEmptyCells.ToString() + "," + 
+                                 nSeedCells.ToString() + "," + 
+                                 nWateredCells.ToString() + "," + 
+                                 total_changes.ToString() + "," + 
+                                 total_tasks.ToString() + "," + 
+                                 total_reloads.ToString();
 
+            for (int i=0; i<drones.Length; i++){
+                    float minThreshold = drones[i].GetMinThreshold();
+                    int speciality = drones[i].GetSpeciality();
+                    dataToStore += "," + minThreshold.ToString("#.00", CultureInfo.InvariantCulture) + "," + speciality.ToString();
+            }
+            dataToStore += "\n";
             using (FileStream stream = new FileStream(fullPath, FileMode.Append)){
                 using (StreamWriter writer = new StreamWriter(stream)){
                     writer.Write(dataToStore);
@@ -134,7 +215,7 @@ public class ManagerScript : MonoBehaviour
         yield return new WaitForSeconds(timeToReport);
         StartCoroutine(SaveFile());
     }
-
+    
 
     /// <summary>
     /// Methods to add a task to the queue
@@ -147,7 +228,7 @@ public class ManagerScript : MonoBehaviour
     /// </param>
     private void AddTask(int taskType, int cellId){
         int[] newTask = new int[]{taskType, cellId};
-        tasks.Enqueue(newTask);
+        tasks.Add(newTask);
     }
 
 
@@ -165,11 +246,11 @@ public class ManagerScript : MonoBehaviour
     /// </returns>
     public int AddCell(AbstractCellScript newCell, int type){
         if (type==emptyCell){
-            emptDict[cellsCount] = newCell;
+            emptDict.Add(cellsCount, newCell);
         } else if (type==seedCell){
-            seedsDict[cellsCount] = newCell;
+            seedsDict.Add(cellsCount, newCell);
         }else if (type==wateredCell){
-            wateredDict[cellsCount] = newCell;
+            wateredDict.Add(cellsCount, newCell);
         }
 
         int cellId = cellsCount;
@@ -210,11 +291,11 @@ public class ManagerScript : MonoBehaviour
     /// Cell id of the dictionary
     /// </param>
     public Vector3 GetPositionOfCell(int taskType, int cellId){
-        if (taskType==emptyCell){
+        if (taskType==emptyCell && emptDict.ContainsKey(cellId)){
             return emptDict[cellId].GetPosition();
-        } else if (taskType==seedCell){
+        } else if (taskType==seedCell && seedsDict.ContainsKey(cellId)){
             return seedsDict[cellId].GetPosition();
-        }else if (taskType==wateredCell){
+        }else if (taskType==wateredCell && wateredDict.ContainsKey(cellId)){
             return wateredDict[cellId].GetPosition();
         }
 
@@ -238,4 +319,31 @@ public class ManagerScript : MonoBehaviour
     }
 
     
+    /// <summary>
+    /// Increases the number of changes made
+    /// </summary>
+    public void IncreaseChanges(){
+        total_changes += 1;
+    }
+
+
+    /// <summary>
+    /// Increase total tasks done
+    /// </summary>
+    public void IncreaseTask(){
+        total_tasks += 1;
+    }
+    
+
+    /// <summary>
+    /// Increase total reloads done
+    /// </summary>
+    public void IncreaseReloads(){
+        total_reloads += 1;
+    }
+
+    private IEnumerator FinishSimulation(){
+        yield return new WaitForSeconds(simulationTime);
+        SceneManager.LoadScene(0);
+    }
 }
