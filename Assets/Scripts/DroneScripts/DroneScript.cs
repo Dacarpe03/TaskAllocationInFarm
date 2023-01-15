@@ -230,7 +230,7 @@ public class DroneScript : MonoBehaviour
             return 0f;
         }
         float multiplier = 1;
-        if (improved){
+        if (improved && task[0]==lastTask){
             multiplier = Mathf.Min(consecutiveTasks, maxResources);
         }
         int taskType = task[0];
