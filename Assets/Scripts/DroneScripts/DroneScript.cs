@@ -229,6 +229,10 @@ public class DroneScript : MonoBehaviour
         if (tasksQueue.Count >= maxQueueSize){
             return 0f;
         }
+        float multiplier = 1;
+        if (improved){
+            multiplier = Mathf.Min(consecutiveTasks, maxResources);
+        }
         int taskType = task[0];
         int cellId = task[1];
         float bid = 1f;
@@ -236,7 +240,7 @@ public class DroneScript : MonoBehaviour
         float thresholdSquared = Mathf.Pow(taskThresholds[taskType], 2);
         float timeComponent = GetTimeComponent(taskType, cellId);
         float timeComponentSquared = Mathf.Pow(taskThresholds[taskType], 2*beta);
-        float probability = demandSquared/(demandSquared + alpha*thresholdSquared + timeComponentSquared);
+        float probability = multiplier * demandSquared/(demandSquared + alpha*thresholdSquared + timeComponentSquared);
         return bid;
     }
 
