@@ -1,2 +1,2 @@
 # TaskAllocationInFarm
-![image](https://user-images.githubusercontent.com/45000161/206550246-d0ab9472-1391-4a2f-869d-4df53370e721.png)
+![Captura de pantalla (4)](https://user-images.githubusercontent.com/45000161/227600211-b7326604-03be-456d-bba5-000a0ecf4741.png)
